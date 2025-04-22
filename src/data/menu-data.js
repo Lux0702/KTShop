@@ -5,34 +5,6 @@ import home_4 from '@assets/img/menu/menu-home-4.jpg';
 
 const menu_data = [
   {
-    id: 1,
-    homes: true,
-    title: 'Home',
-    link: '/',
-    home_pages: [
-      {
-        img: home_1,
-        title: 'Electronics',
-        link: '/'
-      },
-      {
-        img: home_2,
-        title: 'Fashion',
-        link: '/home-2'
-      },
-      {
-        img: home_3,
-        title: 'Beauty',
-        link: '/home-3'
-      },
-      {
-        img: home_4,
-        title: 'Jewelry',
-        link: '/home-4'
-      }
-    ]
-  },
-  {
     id: 2,
     products: true,
     title: 'Products',
@@ -43,7 +15,7 @@ const menu_data = [
         link: '/shop',
         mega_menus: [
           { title: 'Only Categories', link: '/shop-category' },
-          { title: 'Shop Grid with Sideber', link: '/shop' },
+          // { title: 'Shop Grid with Sideber', link: '/shop' },
           { title: 'Product Details', link: '/product-details' },
         ]
       },
@@ -87,8 +59,8 @@ const menu_data = [
     link: '/shop',
     sub_menus: [
       { title: 'Shop', link: '/shop' },
-      { title: 'Right Sidebar', link: '/shop-right-sidebar' },
-      { title: 'Hidden Sidebar', link: '/shop-hidden-sidebar' },
+      // { title: 'Right Sidebar', link: '/shop-right-sidebar' },
+      // { title: 'Hidden Sidebar', link: '/shop-hidden-sidebar' },
     ],
   },
   {
@@ -96,19 +68,6 @@ const menu_data = [
     single_link: true,
     title: 'Coupons',
     link: '/coupon',
-  },
-  {
-    id: 5,
-    sub_menu: true,
-    title: 'Blog',
-    link: '/blog',
-    sub_menus: [
-      { title: 'Blog Standard', link: '/blog' },
-      { title: 'Blog Grid', link: '/blog-grid' },
-      { title: 'Blog List', link: '/blog-list' },
-      { title: 'Blog Details', link: '/blog-details' },
-      { title: 'Blog Details Full Width', link: '/blog-details-2' },
-    ]
   },
   {
     id: 6,

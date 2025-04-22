@@ -7,8 +7,7 @@ import { useGetProductTypeQuery } from "@/redux/features/productApi";
 import { HomeNewArrivalPrdLoader } from "@/components/loader";
 import ErrorMsg from "@/components/common/error-msg";
 import ProductItem from "@/components/products/electronics/product-item";
-import blogData from "@/data/blog-data";
-import BlogItem from "@/components/blog/fashion/blog-item";
+
 
 const Menus = () => {
   const { data: products, isError, isLoading } = useGetProductTypeQuery({
@@ -16,8 +15,6 @@ const Menus = () => {
     query: 'new=true'
   });
   
-  const blogs = blogData.filter(b => b.blog === 'fashion');
-
   // decide what to render
   let content = null;
   

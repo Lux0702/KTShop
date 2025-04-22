@@ -32,7 +32,6 @@ const HomeTwo = () => {
       <ProductBanner/>
        <NewArrivals/>
       <ProductSmArea/>
-      <BlogArea/>
       <InstagramArea/>
       <CtaArea/>
       <Footer/>
