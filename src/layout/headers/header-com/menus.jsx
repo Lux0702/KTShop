@@ -59,11 +59,7 @@ const Menus = () => {
               {content}
             </div> */}
                <div className="row">
-            {blogs.map(blog => (
-              <div key={blog.id} className="col-xl-4 col-lg-4 col-md-6">
-                <BlogItem blog={blog} />
-              </div>
-            ))}
+           
           </div>
                 {/* <OfferCouponArea/> */}
               <div className="row row-cols-1 row-cols-lg-4 row-cols-xl-4">
