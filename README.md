@@ -1,6 +1,5 @@
 # Shofy Fashion – Full Stack eCommerce Web Application + Admin Panel
 
-
 ![Shofy Image Banner](https://i.ibb.co/vckrzmN/shofy-fashion-banner.png)
 
 Shofy fashion is a powerful and modern full stack eCommerce web application built using Next.js, Express.js, MongoDB with Mongoose, Redux Toolkit, RTK Query, Stripe payment method, Bootstrap 5, and Sass. It includes a feature-rich admin panel for easy management and control of your online store.
@@ -103,7 +102,7 @@ To get started with Shofy, follow these steps:
 
 ## Server Side Live Link
 
-[Shofy Fashion Server Side Live Link](https://shofy-backend.vercel.app)
+[Shofy Fashion Server Side Live Link](https://ktshop.onrender.com)
 
 ## Client Side Repo
 
@@ -124,20 +123,4 @@ To get started with Shofy, follow these steps:
 
 We hope you find Shofy to be a powerful and effective solution for your eCommerce needs. Should you encounter
 
- any issues or have any questions, please feel free to reach out to our support team at swe.hamedhasan@gmail.com. Happy selling!
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- 
+any issues or have any questions, please feel free to reach out to our support team at swe.hamedhasan@gmail.com. Happy selling!

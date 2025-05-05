@@ -7,7 +7,7 @@ export const authApi = apiSlice.injectEndpoints({
     // createPaymentIntent
     createPaymentIntent: builder.mutation({
       query: (data) => ({
-        url: "https://shofy-backend.vercel.app/api/order/create-payment-intent",
+        url: "https://ktshop.onrender.com/api/order/create-payment-intent",
         method: "POST",
         body: data,
       }),
@@ -20,16 +20,15 @@ export const authApi = apiSlice.injectEndpoints({
           // do nothing
         }
       },
-
     }),
     // saveOrder
     saveOrder: builder.mutation({
       query: (data) => ({
-        url: "https://shofy-backend.vercel.app/api/order/saveOrder",
+        url: "https://ktshop.onrender.com/api/order/saveOrder",
         method: "POST",
         body: data,
       }),
-      invalidatesTags:['UserOrders'],
+      invalidatesTags: ["UserOrders"],
       async onQueryStarted(arg, { queryFulfilled, dispatch }) {
         try {
           const result = await queryFulfilled;
@@ -42,17 +41,16 @@ export const authApi = apiSlice.injectEndpoints({
           // do nothing
         }
       },
-
     }),
     // getUserOrders
     getUserOrders: builder.query({
-      query: () => `https://shofy-backend.vercel.app/api/user-order`,
-      providesTags:["UserOrders"],
+      query: () => `https://ktshop.onrender.com/api/user-order`,
+      providesTags: ["UserOrders"],
       keepUnusedDataFor: 600,
     }),
     // getUserOrders
     getUserOrderById: builder.query({
-      query: (id) => `https://shofy-backend.vercel.app/api/user-order/${id}`,
+      query: (id) => `https://ktshop.onrender.com/api/user-order/${id}`,
       providesTags: (result, error, arg) => [{ type: "UserOrder", id: arg }],
       keepUnusedDataFor: 600,
     }),

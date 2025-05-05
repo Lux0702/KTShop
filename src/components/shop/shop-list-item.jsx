@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/image";
 import { Rating } from "react-simple-star-rating";
 import Link from "next/link";
@@ -9,11 +9,24 @@ import { handleProductModal } from "@/redux/features/productModalSlice";
 import { add_cart_product } from "@/redux/features/cartSlice";
 import { add_to_wishlist } from "@/redux/features/wishlist-slice";
 import { add_to_compare } from "@/redux/features/compareSlice";
+import { notifyError, notifySuccess } from "@/utils/toast";
 
 const ShopListItem = ({ product }) => {
-  const { _id, img, category, title, reviews, price, discount, tags, description } = product || {};
-  const dispatch = useDispatch()
+  const {
+    _id,
+    img,
+    category,
+    title,
+    reviews,
+    price,
+    discount,
+    tags,
+    description,
+  } = product || {};
+  const dispatch = useDispatch();
   const [ratingVal, setRatingVal] = useState(0);
+  const accessToken = useSelector((state) => state.auth.accessToken);
+
   useEffect(() => {
     if (reviews && reviews.length > 0) {
       const rating =
@@ -31,6 +44,12 @@ const ShopListItem = ({ product }) => {
   };
   // handle wishlist product
   const handleWishlistProduct = (prd) => {
+    console.log("accessToken", accessToken);
+    if (!accessToken) {
+      notifyError(`Please login to add ${prd.title} to wishlist`);
+
+      return;
+    }
     dispatch(add_to_wishlist(prd));
   };
 
@@ -61,7 +80,7 @@ const ShopListItem = ({ product }) => {
             </button>
             <button
               type="button"
-              onClick={()=> handleWishlistProduct(product)}
+              onClick={() => handleWishlistProduct(product)}
               className="tp-product-action-btn-2 tp-product-add-to-wishlist-btn"
             >
               <Wishlist />
@@ -69,9 +88,10 @@ const ShopListItem = ({ product }) => {
                 Add To Wishlist
               </span>
             </button>
+
             <button
               type="button"
-              onClick={()=> handleCompareProduct(product)}
+              onClick={() => handleCompareProduct(product)}
               className="tp-product-action-btn-2 tp-product-add-to-compare-btn"
             >
               <CompareThree />
@@ -85,31 +105,46 @@ const ShopListItem = ({ product }) => {
       <div className="tp-product-list-content">
         <div className="tp-product-content-2 pt-15">
           <div className="tp-product-tag-2">
-            {tags?.map((t, i) => <a key={i} href="#">{t}</a>)}
+            {tags?.map((t, i) => (
+              <a key={i} href="#">
+                {t}
+              </a>
+            ))}
           </div>
           <h3 className="tp-product-title-2">
             <Link href={`/product-details/${_id}`}>{title}</Link>
           </h3>
           <div className="tp-product-rating-icon tp-product-rating-icon-2">
-            <Rating allowFraction size={16} initialValue={ratingVal} readonly={true} />
+            <Rating
+              allowFraction
+              size={16}
+              initialValue={ratingVal}
+              readonly={true}
+            />
           </div>
           <div className="tp-product-price-wrapper-2">
             {discount > 0 ? (
               <>
                 <span className="tp-product-price-2 new-price">${price}</span>
                 <span className="tp-product-price-2 old-price">
-                  {" "} ${(Number(price) - (Number(price) * Number(discount)) / 100).toFixed(2)}
+                  {" "}
+                  $
+                  {(
+                    Number(price) -
+                    (Number(price) * Number(discount)) / 100
+                  ).toFixed(2)}
                 </span>
               </>
             ) : (
               <span className="tp-product-price-2 new-price">${price}</span>
             )}
           </div>
-          <p>
-            {description.substring(0, 100)}
-          </p>
+          <p>{description.substring(0, 100)}</p>
           <div className="tp-product-list-add-to-cart">
-            <button onClick={() => handleAddProduct(product)} className="tp-product-list-add-to-cart-btn">
+            <button
+              onClick={() => handleAddProduct(product)}
+              className="tp-product-list-add-to-cart-btn"
+            >
               Add To Cart
             </button>
           </div>

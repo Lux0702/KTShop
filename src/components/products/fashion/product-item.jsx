@@ -9,6 +9,7 @@ import { handleProductModal } from "@/redux/features/productModalSlice";
 import { add_cart_product } from "@/redux/features/cartSlice";
 import { add_to_wishlist } from "@/redux/features/wishlist-slice";
 import { add_to_compare } from "@/redux/features/compareSlice";
+import { notifyError, notifySuccess } from "@/utils/toast";
 
 const ProductItem = ({ product, style_2 = false }) => {
   const { _id, img, category, title, reviews, price, discount, tags, status } = product || {};
@@ -18,6 +19,7 @@ const ProductItem = ({ product, style_2 = false }) => {
   const isAddedToCart = cart_products.some((prd) => prd._id === _id);
   const isAddedToWishlist = wishlist.some((prd) => prd._id === _id);
   const dispatch = useDispatch();
+  const accessToken = useSelector((state) => state.auth.accessToken);
 
   useEffect(() => {
     if (reviews && reviews.length > 0) {
@@ -36,6 +38,11 @@ const ProductItem = ({ product, style_2 = false }) => {
   };
   // handle wishlist product
   const handleWishlistProduct = (prd) => {
+    console.log("accessToken", accessToken);
+    if (!accessToken) {
+      notifyError(`Please login to add ${prd.title} to wishlist`);
+      return;
+    }
     dispatch(add_to_wishlist(prd));
   };
 

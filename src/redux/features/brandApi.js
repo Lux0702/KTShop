@@ -1,14 +1,12 @@
 import { apiSlice } from "../api/apiSlice";
 
 export const brandApi = apiSlice.injectEndpoints({
-  overrideExisting:true,
+  overrideExisting: true,
   endpoints: (builder) => ({
     getActiveBrands: builder.query({
-      query: () => `https://shofy-backend.vercel.app/api/brand/active`
+      query: () => `https://ktshop.onrender.com/api/brand/active`,
     }),
   }),
 });
 
-export const {
- useGetActiveBrandsQuery
-} = brandApi;
+export const { useGetActiveBrandsQuery } = brandApi;

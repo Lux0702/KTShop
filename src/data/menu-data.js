@@ -24,7 +24,7 @@ const menu_data = [
         link: '/product-details',
         mega_menus: [
           { title: 'Product Simple', link: '/product-details' },
-          { title: 'With Video', link: '/product-details-video' },
+          // { title: 'With Video', link: '/product-details-video' },
           { title: 'With Countdown Timer', link: '/product-details-countdown' },
           { title: 'Variations Swatches', link: '/product-details-swatches' },
         ]
