@@ -44,9 +44,13 @@ const ProductItem = ({ product, offer_style = false }) => {
   }, [reviews]);
 
   // handle add product
-  const handleAddProduct = (prd) => {
-    dispatch(add_cart_product(prd));
-  };
+   const handleAddProduct = (prd) => {
+        console.log("status", status);
+
+     if (status === "out-of-stock")
+       notifyError(` ${prd.title} out of stock`);
+     dispatch(add_cart_product(prd));
+   };
   // handle wishlist product
   const handleWishlistProduct = (prd) => {
     console.log("accessToken", accessToken);

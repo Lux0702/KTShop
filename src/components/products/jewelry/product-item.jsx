@@ -19,6 +19,8 @@ const ProductItem = ({ product }) => {
 
   // handle add product
   const handleAddProduct = (prd) => {
+    if (status === "out-of-stock")
+      notifyError(` ${prd.title} out of stock`);
     dispatch(add_cart_product(prd));
   };
 

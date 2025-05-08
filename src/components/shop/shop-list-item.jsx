@@ -40,6 +40,7 @@ const ShopListItem = ({ product }) => {
 
   // handle add product
   const handleAddProduct = (prd) => {
+    
     dispatch(add_cart_product(prd));
   };
   // handle wishlist product

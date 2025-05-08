@@ -20,6 +20,9 @@ const ProductItem = ({ product, prdCenter = false, primary_style = false }) => {
 
   // handle add product
   const handleAddProduct = (prd) => {
+    console.log("status", prd);
+    if (status === "out-of-stock")
+      notifyError(` ${prd.title} out of stock`);
     dispatch(add_cart_product(prd));
   };
   // handle wishlist product

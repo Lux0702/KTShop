@@ -26,19 +26,39 @@ const CartCheckout = () => {
         <div className="tp-cart-checkout-shipping-option-wrapper">
           <div className="tp-cart-checkout-shipping-option">
             <input id="flat_rate" type="radio" name="shipping" />
-            <label htmlFor="flat_rate" onClick={()=> handleShippingCost(20)}>
+            <label htmlFor="flat_rate" onClick={() => handleShippingCost(20)}>
               Flat rate: <span>$20.00</span>
             </label>
           </div>
           <div className="tp-cart-checkout-shipping-option">
             <input id="local_pickup" type="radio" name="shipping" />
-            <label htmlFor="local_pickup" onClick={()=> handleShippingCost(25)}>
+            <label
+              htmlFor="local_pickup"
+              onClick={() => handleShippingCost(25)}
+            >
               Local pickup: <span> $25.00</span>
             </label>
           </div>
-          <div className="tp-cart-checkout-shipping-option">
-            <input id="free_shipping" type="radio" name="shipping" />
-            <label onClick={()=> handleShippingCost('free')} htmlFor="free_shipping">Free shipping</label>
+          <div
+            className="tp-cart-checkout-shipping-option"
+            disabled={total < 200}
+          >
+            <input
+              id="free_shipping"
+              type="radio"
+              name="shipping"
+              disabled={total < 200}
+            />
+            <label
+              onClick={() => total >= 200 && handleShippingCost("free")}
+              htmlFor="free_shipping"
+              style={{
+                color: total < 200 ? "#ccc" : "black",
+                cursor: total < 200 ? "not-allowed" : "pointer",
+              }}
+            >
+              Free shipping
+            </label>
           </div>
         </div>
       </div>

@@ -34,6 +34,8 @@ const ProductItem = ({ product, style_2 = false }) => {
 
   // handle add product
   const handleAddProduct = (prd) => {
+    // if (status !== "in-stock")
+    //   return notifyError(` ${prd.title} out of stock`);
     dispatch(add_cart_product(prd));
   };
   // handle wishlist product

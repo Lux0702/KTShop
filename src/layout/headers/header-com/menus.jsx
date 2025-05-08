@@ -83,7 +83,7 @@ const Menus = () => {
         ) : menu.products ? (
           <li key={menu.id} className="has-dropdown has-mega-menu ">
             <Link href={menu.link}>{menu.title}</Link>
-            <ul className="tp-submenu tp-mega-menu mega-menu-style-2">
+            {/* <ul className="tp-submenu tp-mega-menu mega-menu-style-2">
               {menu.product_pages.map((p, i) => (
                 <li key={i} className="has-dropdown">
                   <Link href={p.link} className="mega-menu-title">
@@ -98,7 +98,7 @@ const Menus = () => {
                   </ul>
                 </li>
               ))}
-            </ul>
+            </ul> */}
           </li>
         ) : menu.sub_menu ? (
           <li key={menu.id} className="has-dropdown">
