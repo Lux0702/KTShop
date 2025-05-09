@@ -44,7 +44,9 @@ const HeaderMainRight = ({ setIsCanvasOpen }) => {
                 <span>Hello,</span>
               </Link>
             )}
-            {userInfo?.name && <span>Hello, {userInfo?.name}</span>}
+            {userInfo?.name && (
+              <span>Hello, {userInfo?.name?.split(" ").pop()}</span>
+            )}
             <div className="tp-header-login-title">
               {!userInfo?.name && <Link href="/login">Sign In</Link>}
               {userInfo?.name && <Link href="/profile">Your Account</Link>}
