@@ -1,0 +1,65 @@
+.widget-container{
+    display: flex;
+    flex-direction: row;
+}
+.widget {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    flex: 1;
+    margin: 0 10px;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+}
+
+.left h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.left p {
+    margin: 4px 0;
+    color: #777;
+}
+
+.paymentInfo {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.cash {
+    background-color: #d9fbe9;
+    color: #28a745;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.card {
+    background-color: #f2e7fe;
+    color: #7e22ce;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    font-size: 50px;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+}

@@ -1,7 +1,6 @@
-/* styles/breadcrumbs.scss */
 .breadcrumbs {
     font-size: 14px;
-    color: #4b5563;
+    color: #4b5563; // text-gray-600
     margin-bottom: 1rem;
 
     ol {
@@ -15,7 +14,7 @@
 
             a {
                 text-decoration: none;
-                color: #2563eb;
+                color: #2563eb; // text-blue-600
 
                 &:hover {
                     text-decoration: underline;
@@ -28,7 +27,7 @@
             }
 
             span {
-                color: #6b7280;
+                color: #6b7280; // gray-500
             }
         }
     }

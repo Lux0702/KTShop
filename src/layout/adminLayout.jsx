@@ -1,15 +1,17 @@
 import React from "react";
 import Sidebar from "@/components/admin/sidebar/sidebar.jsx";
 import HeaderAdmin from "@/components/admin/header/HeaderAdmin";
+import Breadcrumbs from "@/components/admin/Breadcrumbs";
 
 const AdminLayout = ({ children }) => {
   return (
-    <div className="flex bg-[#f1f5f9]">
+    <div className="admin-layout">
       <Sidebar />
 
-      <main className="flex-grow">
+      <main className="admin-main">
         <HeaderAdmin />
-        <div className="p-4">{children}</div>
+        <Breadcrumbs />
+        <div className="admin-content">{children}</div>
       </main>
     </div>
   );

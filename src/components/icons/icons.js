@@ -1,4 +1,3 @@
-// src/components/icons/icones.js
 import {
   MdDashboard,
   MdOutlineCategory,
@@ -6,8 +5,18 @@ import {
   MdOutlineLocalOffer,
   MdOutlineStore,
   MdOutlineInsertDriveFile,
+  MdNotifications,
 } from "react-icons/md";
-import { FaBoxOpen, FaUserCircle, FaUserTie, FaLeaf } from "react-icons/fa";
+import {
+  FaBoxOpen,
+  FaUserCircle,
+  FaUserTie,
+  FaLeaf,
+  FaClipboardList,
+  FaChartBar,
+  FaUsers,
+  FaBox,
+} from "react-icons/fa";
 import { AiOutlineShoppingCart } from "react-icons/ai";
 
 export const Icons = {
@@ -22,4 +31,10 @@ export const Icons = {
   OnlineStore: MdOutlineStore,
   Staff: FaUserTie,
   Pages: MdOutlineInsertDriveFile,
+  Notifications: MdNotifications,
+
+  TodayOrders: FaClipboardList,
+  YesterdayOrders: FaChartBar,
+  MonthlyOrders: FaUsers,
+  TotalOrders: FaBox,
 };

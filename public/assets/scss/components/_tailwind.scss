@@ -1,0 +1,22 @@
+
+@import './sidebar';
+@import './headeradmin';
+@import './breadcrumb';
+@import './widget';
+@import './charts';
+.admin-layout {
+    display: flex;
+    background-color: #f1f5f9;
+}
+
+.admin-main {
+    flex-grow: 1;
+    max-width: calc(100% - 256px);
+}
+
+.admin-content {
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}

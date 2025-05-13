@@ -1,45 +1,87 @@
-import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
+import { Icons } from "@/components/icons/icons";
+import { useRouter } from "next/router";
 
 const HeaderAdmin = () => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const avatarButtonRef = useRef(null);
+  const router = useRouter();
+  const { slug } = router.query;
 
-    return (
-        <header className="w-full h-[77px] bg-white flex items-center justify-between border-b border-gray-300 px-4">
-        <h1 className="text-xl font-semibold">Header Admin</h1>
-      
-        <div className="flex items-center gap-6">
-          {/* Nút thông báo */}
-          <button className="relative">
-            <span className="material-icons">notifications</span>
-            <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+  const navigateTo = (path) => {
+    setDropdownOpen(false);
+    router.push(path);
+  };
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+  
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Kiểm tra xem click có nằm ngoài dropdown và avatar button không
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        avatarButtonRef.current &&
+        !avatarButtonRef.current.contains(event.target)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+
+    // Thêm event listener khi component mount
+    document.addEventListener("click", handleClickOutside);
+
+    // Dọn dẹp event listener khi component unmount
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+  return (
+    <header className="header-admin">
+      <h1 className="title">{ slug?.toUpperCase()}</h1>
+
+      <div className="right-section">
+        <button className="notification-button">
+          <span className="material-icons">
+            <Icons.Notifications />
+          </span>
+          <span className="badge">3</span>
+        </button>
+
+        <div className="avatar-menu">
+          <button
+            className="avatar-button"
+            onClick={toggleDropdown}
+            ref={avatarButtonRef}
+          >
+            <img src="/avatar.jpg" alt="Avatar" />
           </button>
-      
-          {/* Avatar User với menu dropdown */}
-          <div className="relative">
-            {/* <button className="flex items-center gap-2">
-              <img src="/path-to-avatar.jpg" alt="User Avatar" className="w-8 h-8 rounded-full" />
-              <span className="text-sm">Username</span>
-            </button> */}
-            
-            {/* Dropdown menu */}
-            <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg border border-gray-300 rounded-lg hidden group-hover:block">
-              <ul className="p-2">
+
+          {dropdownOpen && (
+            <div className="dropdown" ref={dropdownRef}>
+              <ul>
                 <li>
-                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100">Dashboard</button>
+                  <button onClick={() => navigateTo("/admin/dashboard")}>
+                    Dashboard
+                  </button>
                 </li>
                 <li>
-                  <button className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100">Account Settings</button>
+                  <button onClick={() => navigateTo("/admin/profile")}>
+                    Account Settings
+                  </button>
                 </li>
                 <li>
-                  <button className="w-full text-left px-4 py-2 text-sm text-red-500 hover:bg-gray-100">Logout</button>
+                  <button className="logout">Logout</button>
                 </li>
               </ul>
             </div>
-          </div>
+          )}
         </div>
-      </header>
-      
-    );
-}
+      </div>
+    </header>
+  );
+};
+
 export default HeaderAdmin;
