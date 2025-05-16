@@ -1,16 +1,18 @@
 import React from "react";
 import Wrapper from "@/layout/wrapper"; 
-import { useGetDashBoardAmountQuery } from "@/redux/features/admin/dashboardApi";
+import { useGetDashBoardAmountQuery, useGetListOrderQuery } from "@/redux/features/admin/dashboardApi";
 import ErrorMsg from "@/components/common/error-msg";
 import WidgetsLoader from "../widget/widget-loader";
 import WidgetArea from "../widget/widget-area";
 import LineChart from "../charts/LineChart";
 import PieChart from "../charts/PieChart";
+import TableOrder from "../tableOrder/tableOrder";
 
 
 
 const Dashboard = () => {
   const { data: dashboardData, isLoading, isError } = useGetDashBoardAmountQuery();
+  const { data: orderData } = useGetListOrderQuery();
   let content = null;
   if (isLoading) {
     content = <WidgetsLoader loading={isLoading} />;
@@ -18,7 +20,7 @@ const Dashboard = () => {
   if (!isLoading && isError) {
     content = <ErrorMsg msg="There was an error" />;
   }
-  if (!isLoading && !isError && dashboardData) {
+  if (!isLoading && !isError && dashboardData && orderData) {
     content = (
       <>
         <WidgetArea data={dashboardData} />
@@ -31,6 +33,9 @@ const Dashboard = () => {
             <h5>Most Selling Category</h5>
             <PieChart />
           </div>
+        </div>
+        <div className="table-order">
+          <TableOrder invoices={orderData.data} />
         </div>
       </>
     );

@@ -7,7 +7,10 @@ export const dashboardApi = apiSlice.injectEndpoints({
       query: () =>
         `https://ktshop.onrender.com/api/user-order/dashboard-amount`,
     }),
+    getListOrder: builder.query({
+      query: () => `https://ktshop.onrender.com/api/order/orders`,
+    }),
   }),
 });
 
-export const { useGetDashBoardAmountQuery } = dashboardApi;
+export const { useGetDashBoardAmountQuery, useGetListOrderQuery } = dashboardApi;

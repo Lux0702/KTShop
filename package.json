@@ -18,6 +18,7 @@
     "@stripe/react-stripe-js": "^2.1.0",
     "@stripe/stripe-js": "^1.52.1",
     "@tailwindcss/cli": "^4.1.6",
+    "antd": "^5.25.1",
     "bootstrap": "^5.2.3",
     "chart.js": "^4.4.9",
     "chartjs-plugin-datalabels": "^2.2.0",
