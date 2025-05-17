@@ -1,16 +1,23 @@
 import { apiSlice } from "../../api/apiSlice";
+const BASE_URL = "https://ktshop.onrender.com";
 
 export const dashboardApi = apiSlice.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
     getDashBoardAmount: builder.query({
-      query: () =>
-        `https://ktshop.onrender.com/api/user-order/dashboard-amount`,
+      query: () => `${BASE_URL}/api/user-order/dashboard-amount`,
     }),
     getListOrder: builder.query({
-      query: () => `https://ktshop.onrender.com/api/order/orders`,
+      query: () => `${BASE_URL}/api/order/orders`,
+    }),
+    getSaleReport: builder.query({
+      query: () => `${BASE_URL}/api/user-order/sales-report`,
+    }),
+    getMostSaleCategory: builder.query({
+      query: () =>
+        `${BASE_URL}/api/user-order/most-selling-category`,
     }),
   }),
 });
 
-export const { useGetDashBoardAmountQuery, useGetListOrderQuery } = dashboardApi;
+export const { useGetDashBoardAmountQuery, useGetListOrderQuery, useGetSaleReportQuery, useGetMostSaleCategoryQuery } = dashboardApi;

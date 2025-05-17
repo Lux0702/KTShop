@@ -1,6 +1,11 @@
 import React from "react";
 import Wrapper from "@/layout/wrapper"; 
-import { useGetDashBoardAmountQuery, useGetListOrderQuery } from "@/redux/features/admin/dashboardApi";
+import {
+  useGetDashBoardAmountQuery,
+  useGetListOrderQuery,
+  useGetSaleReportQuery,
+  useGetMostSaleCategoryQuery,
+} from "@/redux/features/admin/dashboardApi";
 import ErrorMsg from "@/components/common/error-msg";
 import WidgetsLoader from "../widget/widget-loader";
 import WidgetArea from "../widget/widget-area";
@@ -13,6 +18,8 @@ import TableOrder from "../tableOrder/tableOrder";
 const Dashboard = () => {
   const { data: dashboardData, isLoading, isError } = useGetDashBoardAmountQuery();
   const { data: orderData } = useGetListOrderQuery();
+  const { data: saleReportData } = useGetSaleReportQuery();
+  const { data: mostSaleCategoryData } = useGetMostSaleCategoryQuery();
   let content = null;
   if (isLoading) {
     content = <WidgetsLoader loading={isLoading} />;
