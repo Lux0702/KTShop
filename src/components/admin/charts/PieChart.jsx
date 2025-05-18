@@ -5,11 +5,11 @@ import { Pie } from "react-chartjs-2";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const toUpperCaseFistLetter = (str) => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
+  return str?.charAt(0).toUpperCase() + str?.slice(1);
 }
-const PieChart = () => {
+const PieChart = ({pieData}) => {
   // Dữ liệu danh mục sản phẩm
-  const categoryData = [
+  const categoryData = pieData?.categoryData ||  [
     { _id: "electronics", count: 364 },
     { _id: "fashion", count: 61 },
     { _id: "beauty", count: 52 },
@@ -17,7 +17,7 @@ const PieChart = () => {
   ];
 
   const data = {
-    labels: categoryData.map((item) => toUpperCaseFistLetter(item._id)),
+    labels: categoryData.map((item) =>  toUpperCaseFistLetter( item._id===null ? 'Unknown': item._id)),
     datasets: [
       {
         label: "Category Distribution",

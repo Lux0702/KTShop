@@ -34,11 +34,11 @@ const Dashboard = () => {
         <div className="chart-container">
           <div className="line-chart">
             <h5>Sales Statistics</h5>
-            <LineChart />
+            <LineChart lineData={saleReportData} />
           </div>
           <div className="pie-chart">
             <h5>Most Selling Category</h5>
-            <PieChart />
+            <PieChart pieData={mostSaleCategoryData} />
           </div>
         </div>
         <div className="table-order">

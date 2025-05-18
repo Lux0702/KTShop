@@ -7,7 +7,12 @@
     padding: 10px;
     margin: 10px 0;
 }
+@media screen and (max-width :900px ){
 
+    .chart-container{
+        flex-direction:column;
+    }
+}
 .line-chart {
     flex: 2;
     max-width: 100%;
@@ -16,7 +21,7 @@
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 1rem;
-
+    background: #fff;
     .button {
         font-weight: bold;
         transition: all 0.2s ease;
@@ -39,7 +44,7 @@
     flex: 1;
     max-width: 100%;
     min-width: 0;
-    background-color: #f9f9f9;
+    background-color: #fff;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     padding: 1rem; }

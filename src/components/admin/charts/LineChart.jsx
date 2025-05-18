@@ -20,10 +20,10 @@ ChartJS.register(
   Legend
 );
 
-const LineChart = () => {
+const LineChart = ({lineData}) => {
     const [type, setType] = React.useState("total");
   // Dữ liệu theo yêu cầu
-  const chartData = [
+  const chartData = lineData?.salesReport || [
     {
       date: "2025-05-06",
       total: 300,
