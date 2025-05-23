@@ -4,7 +4,7 @@ import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import {useGetListProductQuery}  from "@/redux/features/admin/productApi";
 import WidgetsLoader from "../widget/widget-loader";
 import ErrorMsg from "@/components/common/error-msg";
-
+import ProductArea from "@/components/admin/product/productArea";
 const { Option } = Select;
 
 const init = [
@@ -26,7 +26,13 @@ export default function Products() {
   if (!isLoading && isError) {
     content = <ErrorMsg msg="There was an error" />;
   }
-
+ if (!isLoading && !isError && listProduct) {
+    content = (
+      <>
+        <ProductArea dataProduct={listProduct} />
+      </>
+    );
+  }
   const cols=[
     {title:"PRODUCT",render:(_,r)=><Space>
         <Image width={40} src={r.img}/>

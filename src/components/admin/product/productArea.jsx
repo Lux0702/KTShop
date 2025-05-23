@@ -31,9 +31,8 @@ const init = [
   // ...
 ];
 
-export default function ProductsArea() {
-  const { data: listProduct, isLoading, isError } = useGetListProductQuery();
-  const [data, setData] = useState(init);
+export default function ProductsArea({dataProduct}) {
+  const [data, setData] = useState(dataProduct);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState("");
   let content = null;

@@ -17,8 +17,8 @@ const AdminSlugPage = () => {
         return <Products />;
       case "orders":
         return <Orders />;
-      case "dashboard":
-        return <Dashboard />;
+      case "category":
+        return <Category />;
       case undefined:
         return <Dashboard />;
       default:
