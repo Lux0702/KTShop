@@ -26,40 +26,40 @@ const initialData = [
   {
     id: "#19723bd7",
     name: "Bluetooth",
-    image: "/img1.png",
+    image: "https://picsum.photos/seed/bluetooth/50/50",
     productType: "/electronics",
     items: 2,
   },
   {
     id: "#19723bd7",
     name: "Smart Watch",
-    image: "/img2.png",
+    image: "https://picsum.photos/seed/smartwatch/50/50",
     productType: "/electronics",
     items: 3,
   },
   {
     id: "#19723bd7",
     name: "CPU Heat Pipes",
-    image: "/img3.png",
+    image: "https://picsum.photos/seed/cpuheat/50/50",
     productType: "/electronics",
     items: 2,
   },
   {
     id: "#19723bd7",
     name: "Mobile Tablets",
-    image: "/img4.png",
+    image: "https://picsum.photos/seed/tablet/50/50",
     productType: "/electronics",
     items: 3,
   },
   {
     id: "#1d424bdb",
     name: "Headphones",
-    image: "/img5.png",
+    image: "https://picsum.photos/seed/headphones/50/50",
     productType: "/electronics",
     items: 9,
   },
 ];
-
+  
 const Category = () => {
   const [form] = Form.useForm();
   const [data, setData] = useState(initialData);
