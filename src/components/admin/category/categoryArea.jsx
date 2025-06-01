@@ -13,6 +13,7 @@ import {
   Modal,
   Image,
   message,
+  Drawer,
 } from "antd";
 import {
   UploadOutlined,
@@ -32,6 +33,8 @@ const CategoryArea = ({dataCategory}) => {
   const [uploadImage] = useUploadImageMutation();
   const [addCategory] = useAddCategoryMutation();
   const [q, setQ] = useState("");
+const [openDrawer, setOpenDrawer] = useState(false);
+const [editingCategory, setEditingCategory] = useState(null);
 
   const columns = [
     // {
@@ -86,22 +89,62 @@ const CategoryArea = ({dataCategory}) => {
       ),
     },
     {
-      title: "ACTION",
-      render: (_, record) => (
-        <Space>
-          <Button icon={<EditOutlined />} />
-          <Button icon={<DeleteOutlined />} danger />
-        </Space>
-      ),
-    },
+  title: "ACTION",
+  render: (_, record) => (
+    <Space>
+      <Button icon={<EditOutlined />} onClick={() => {
+        setEditingCategory(record);
+        setOpenDrawer(true);
+        form.setFieldsValue({
+          name: record.parent,
+          children: record.children || [],
+          description: record.description,
+          image: [{ uid: '-1', name: 'current', status: 'done', url: record.img }],
+          imageUrl: record.img,
+        });
+      }} />
+      <Button icon={<DeleteOutlined />} danger onClick={() => {
+        Modal.confirm({
+          title: "Xác nhận xóa",
+          content: `Bạn có chắc muốn xóa danh mục "${record.parent}" không?`,
+          okText: "Xóa",
+          okType: "danger",
+          cancelText: "Hủy",
+          onOk: async () => {
+            try {
+              // Gọi API xóa nếu có, ví dụ: await deleteCategory(record.id)
+              setData(prev => prev.filter(item => item.id !== record.id));
+              message.success("Xóa thành công");
+            } catch (error) {
+              message.error("Xóa thất bại");
+            }
+          },
+        });
+      }} />
+    </Space>
+  ),
+}
+
   ];
 
+const onFinish = async (values) => {
+  try {
+    if (editingCategory) {
+      // Sửa
+      const updated = {
+        ...editingCategory,
+        parent: values.name,
+        img: values.imageUrl,
+        children: values.children,
+        description: values.description,
+      };
 
-  const onFinish = async (values) => {
-    console.log("Form values before API call:", values, values.children);
-
-    try {
-      // Gọi API addCategory
+      setData(prev =>
+        prev.map(item => item.id === editingCategory.id ? updated : item)
+      );
+      message.success("Cập nhật danh mục thành công");
+    } else {
+      // Thêm mới
       const response = await addCategory({
         parent: values.name,
         img: values.imageUrl || 'https://placehold.co/300x300',
@@ -111,15 +154,19 @@ const CategoryArea = ({dataCategory}) => {
         status: "Show",
       }).unwrap();
 
-      // Cập nhật state với dữ liệu mới từ server
       setData([response.data, ...data]);
-      form.resetFields();
-      message.success('Thêm danh mục thành công');
-    } catch (error) {
-      console.error('Lỗi khi thêm danh mục:', error);
-      message.error(error.data?.message || 'Thêm danh mục thất bại');
+      message.success("Thêm danh mục thành công");
     }
-  };
+
+    form.resetFields();
+    setEditingCategory(null);
+    setOpenDrawer(false);
+  } catch (error) {
+    console.error('Lỗi khi thêm/sửa danh mục:', error);
+    message.error(error.data?.message || 'Thêm/sửa danh mục thất bại');
+  }
+};
+
 
 const handleUpload = async ({ file, onSuccess, onError }) => {
   const formData = new FormData();
@@ -251,7 +298,51 @@ const handleUpload = async ({ file, onSuccess, onError }) => {
           />
         </div>
       </div>
-    </div></>
+    </div>
+    <Drawer
+  title="Chỉnh sửa danh mục"
+  placement="right"
+  width={400}
+  onClose={() => {
+    setOpenDrawer(false);
+    form.resetFields();
+  }}
+  open={openDrawer}
+>
+  <Form form={form} layout="vertical" onFinish={onFinish}>
+    <Form.Item name="image" label="Category Image">
+      <Upload
+        name="image"
+        listType="picture-card"
+        maxCount={1}
+        accept="image/png,image/jpeg,image/webp"
+        customRequest={handleUpload}
+        onChange={({ file }) => {
+          if (file.status === 'removed') {
+            form.setFieldsValue({ imageUrl: null, image: [] });
+          }
+        }}
+      >
+        <div>
+          <UploadOutlined />
+          <div style={{ marginTop: 8 }}>Upload</div>
+        </div>
+      </Upload>
+    </Form.Item>
+    <Form.Item name="imageUrl" noStyle><Input type="hidden" /></Form.Item>
+    <Form.Item name="name" label="Category Title" rules={[{ required: true }]}><Input /></Form.Item>
+    <Form.Item name="children" label="Tags">
+      <Select mode="tags" tokenSeparators={[',']} open={false} />
+    </Form.Item>
+    <Form.Item name="description" label="Description"><TextArea autoSize /></Form.Item>
+
+    <Button type="primary" htmlType="submit" icon={<EditOutlined />}>
+      Cập nhật
+    </Button>
+  </Form>
+</Drawer>
+
+    </>
   );
 };
 
