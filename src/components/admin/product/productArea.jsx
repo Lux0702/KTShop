@@ -1,7 +1,13 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Table, Input, Button, Tag, Space, Rate, Image, Select } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import DrawerArea from "@/components/admin/drawer/drawerArea";
+import {
+  useUpdateProductMutation,
+  useDeleteProductMutation,
+} from "@/redux/features/admin/productApi";
+import { message, Popconfirm } from "antd";
+import { useGetProductQuery } from "@/redux/features/productApi";
 
 const init = [
   {
@@ -17,12 +23,45 @@ const init = [
 export default function ProductsArea({ dataProduct = init || [] }) {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+const [updateProduct] = useUpdateProductMutation();
+const [deleteProduct] = useDeleteProductMutation();
+
+const [selectedId, setSelectedId] = useState(null);
+const { data: productData, isFetching } = useGetProductQuery(selectedId, {
+  skip: !selectedId,
+});
+
+const handleEdit = (record) => {
+  setSelectedId(record.id);
+};
+
+useEffect(() => {
+  if (productData) {
+    setEditingProduct(productData);
+    setOpen(true);
+  }
+}, [productData]);
+
+const handleDelete = async (id) => {
+  try {
+    await deleteProduct(id).unwrap();
+    message.success("Xoá sản phẩm thành công");
+  } catch (error) {
+    console.error(error);
+    message.error("Xoá thất bại");
+  }
+};
+
     const showDrawer = () => {
       setOpen(true);
     };
 const onClose = () => {
-      setOpen(false);
-    };
+  setOpen(false);
+  setEditingProduct(null);
+  setSelectedId(null);
+};
+
   // 2. Chuẩn hóa dữ liệu với Type Checking
   const normalizedData = useMemo(() => {
     try {
@@ -92,14 +131,22 @@ const onClose = () => {
       ),
     },
     {
-      title: "ACTION",
-      render: () => (
-        <Space>
-          <Button icon={<EditOutlined />} />
-          <Button icon={<DeleteOutlined />} danger />
-        </Space>
-      ),
-    },
+  title: "ACTION",
+  render: (_, record) => (
+    <Space>
+      <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
+      <Popconfirm
+        title="Bạn có chắc muốn xoá sản phẩm này?"
+        onConfirm={() => handleDelete(record.id)}
+        okText="Xoá"
+        cancelText="Huỷ"
+      >
+        <Button icon={<DeleteOutlined />} danger />
+      </Popconfirm>
+    </Space>
+  ),
+}
+
   ];
   return (
     <Space direction="vertical" style={{ width: "100%" }}>
@@ -132,7 +179,7 @@ const onClose = () => {
         pagination={{ pageSize: 5 }}
         locale={{ emptyText: "No products found" }}
       />
-      <DrawerArea open={open} onClose={onClose} />
+<DrawerArea open={open} onClose={onClose} initialValues={editingProduct} />
     </Space>
 
   );

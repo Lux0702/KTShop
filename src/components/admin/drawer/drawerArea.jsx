@@ -1,317 +1,324 @@
-import React, { useState } from 'react';
-import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, DatePicker, Drawer, Form, Input, Row, Select, Space, InputNumber, Tag } from 'antd';
-const { Option } = Select;
+import React, { useState, useEffect } from 'react';
+import {
+  Drawer, Form, Input, Button, Select, Upload, InputNumber, DatePicker,
+  Row, Col, message
+} from 'antd';
+import { PlusOutlined, UploadOutlined, MinusCircleOutlined } from '@ant-design/icons';
+import { useUploadImageMutation } from '@/redux/features/admin/cloudinaryApi';
+import { useAddProductMutation, useUpdateProductMutation } from '@/redux/features/admin/productApi';
+import { useGetAllCategoriesQuery } from '@/redux/features/admin/categoryApi';
+import { useGetActiveBrandsQuery } from '@/redux/features/brandApi';
+
 const { TextArea } = Input;
+const { RangePicker } = DatePicker;
+const { Option } = Select;
 
-const DrawerArea = ({ open, onClose }) => {
+const DrawerArea = ({ open, onClose, initialValues }) => {
+
+
+
   const [form] = Form.useForm();
-  
-  const onFinish = (values) => {
-    console.log('Received values of form:', values);
-    // Xử lý dữ liệu form ở đây
-    onClose();
+  const [variations, setVariations] = useState([]);
+  const [additionalInfo, setAdditionalInfo] = useState([]);
+  const [fileList, setFileList] = useState([]);
+
+  const [uploadImage] = useUploadImageMutation();
+  const [updateProduct] = useUpdateProductMutation();
+
+  const [addProduct] = useAddProductMutation();
+
+  const { data: categoryResponse } = useGetAllCategoriesQuery();
+  const categories = categoryResponse?.result || [];
+  const { data: brandResponse } = useGetActiveBrandsQuery();
+  const brands = brandResponse?.result || [];
+
+  const handleVariationAdd = () => {
+    setVariations([...variations, { name: '', clrCode: '', img: '' }]);
   };
 
-  const tagChildren = [];
-  for (let i = 0; i < 3; i++) {
-    tagChildren.push(<Option key={i.toString(36) + i}>tag{i}</Option>);
-  }
-const handleTitleChange = (e) => {
-    const title = e.target.value;
-    form.setFieldsValue({
-      slug: convertToSlug(title)
-    });
+  const handleAdditionalAdd = () => {
+    setAdditionalInfo([...additionalInfo, { key: '', value: '' }]);
   };
-    const convertToSlug = (text) => {
-    if (!text) return '';
-    
-    // Chuyển đổi tiếng Việt có dấu thành không dấu
-    const from = "àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ";
-    const to = "aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooooouuuuuuuuuuuyyyyydAAAAAAAAAAAAAAAAAEEEEEEEEEEEIIIIIOOOOOOOOOOOOOOOOOUUUUUUUUUUUYYYYYD";
-    
-    let newText = text;
-    for (let i = 0; i < from.length; i++) {
-      newText = newText.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
-    }
-    
-    return newText
-      .toLowerCase()
-      .replace(/ /g, '-')           // Thay khoảng trắng bằng dấu gạch ngang
-      .replace(/[^\w-]+/g, '')     // Loại bỏ ký tự đặc biệt
-      .replace(/--+/g, '-')        // Thay nhiều gạch ngang bằng 1 gạch
-      .replace(/^-+/, '')          // Loại bỏ gạch ngang ở đầu
-      .replace(/-+$/, '');         // Loại bỏ gạch ngang ở cuối
-  };
-  return (
-    <Drawer
-      title="Tạo sản phẩm mới"
-      width={720}
-      onClose={onClose}
-      open={open}
-      styles={{
-        body: {
-          paddingBottom: 80,
-        },
-      }}
-      extra={
-        <Space>
-          <Button onClick={onClose}>Hủy</Button>
-          <Button onClick={() => form.submit()} type="primary">
-            Tạo sản phẩm
-          </Button>
-        </Space>
+
+  const handleUpload = async ({ file, onSuccess, onError }, index = null) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    try {
+      const res = await uploadImage(formData).unwrap();
+      if (index === null) {
+        form.setFieldsValue({ img: res.data.url });
+      } else {
+        const newVariations = [...variations];
+        newVariations[index].img = res.data.url;
+        setVariations(newVariations);
       }
-    >
-      <Form 
-        layout="vertical" 
-        hideRequiredMark
-        form={form}
-        onFinish={onFinish}
-      >
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="sku"
-              label="SKU"
-              rules={[{ required: true, message: 'Vui lòng nhập SKU' }]}
-            >
-              <Input placeholder="PROD01" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="title"
-              label="Tên sản phẩm"
-              rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm' }]}
-              onChange={handleTitleChange}
-            >
-              <Input placeholder="Test Product 1" />
-            </Form.Item>
-          </Col>
-        </Row>
+      onSuccess('OK');
+    } catch (err) {
+      onError(err);
+    }
+  };
 
+  const onFinish = async (values) => {
+  try {
+    const imageURLs = variations.map(v => ({
+      color: { name: v.name, clrCode: v.clrCode },
+      img: v.img
+    }));
+
+    const additional_information = additionalInfo.reduce((acc, cur) => {
+      if (cur.key) acc[cur.key] = cur.value;
+      return acc;
+    }, {});
+
+    const selectedBrand = brands.find(b => b.id === values.brand_id);
+    const selectedCategory = categories.find(c => c.id === values.category_id);
+
+    const payload = {
+      ...values,
+      imageURLs,
+      additional_information,
+      offer_start_date: values.offerDates?.[0]?.toISOString() || null,
+      offer_end_date: values.offerDates?.[1]?.toISOString() || null,
+      parent: 'featured',
+      children: 'Phone',
+      brand_name: selectedBrand?.name || 'Unknown',
+      category_name: selectedCategory?.parent || 'Unknown',
+      img: values.img,
+      product_type: 'fashion'
+    };
+
+    if (initialValues?.id) {
+      await updateProduct({ id: initialValues.id, ...payload }).unwrap();
+      message.success('Cập nhật sản phẩm thành công');
+    } else {
+      await addProduct(payload).unwrap();
+      message.success('Thêm sản phẩm thành công');
+    }
+
+    form.resetFields();
+    setVariations([]);
+    setAdditionalInfo([]);
+    onClose();
+  } catch (err) {
+    message.error(initialValues?.id ? 'Cập nhật thất bại' : 'Thêm sản phẩm thất bại');
+  }
+};
+
+useEffect(() => {
+    console.log("📥 initialValues:", initialValues);
+  if (initialValues) {
+    const { image_urls = [], additional_information = [], offer_start_date, offer_end_date, ...rest } = initialValues;
+
+    if (initialValues?.img) {
+        setFileList([
+          {
+            uid: '-1',
+            name: 'image.jpg',
+            status: 'done',
+            url: initialValues.img,
+          },
+        ]);
+      } else {
+        setFileList([]);
+      }
+    // Chuyển image_urls thành variations
+    const variations = image_urls.map(item => ({
+      name: item.color?.name || '',
+      clrCode: item.color?.clrCode || '',
+      img: item.img || ''
+    }));
+    setVariations(variations);
+
+    // Chuyển additional_information từ object -> array
+    const additionalInfo = Array.isArray(additional_information)
+      ? additional_information.flatMap(obj => {
+          const key = Object.keys(obj)[0];
+          return key ? [{ key, value: obj[key] }] : [];
+        })
+      : [];
+
+    setAdditionalInfo(additionalInfo);
+
+    // Convert offerDates
+    const offerDates = offer_start_date && offer_end_date
+      ? [dayjs(offer_start_date), dayjs(offer_end_date)]
+      : undefined;
+
+    form.setFieldsValue({
+      ...rest,
+      offerDates,
+      sizes: rest.sizes || [],
+      tags: rest.tags || [],
+    });
+  } else {
+    form.resetFields();
+    setVariations([]);
+    setAdditionalInfo([]);
+  }
+}, [initialValues]);
+
+  return (
+    <Drawer title={initialValues ? "Edit Product" : "Add Product"} width={800} onClose={onClose} open={open}>
+      <Form layout="vertical" form={form} onFinish={onFinish}>
         <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="slug"
-              label="Slug"
-              rules={[{ required: true, message: 'Vui lòng nhập slug' }]}
-            >
-              <Input placeholder="test-product-1" disabled  />
+          <Col span={16}>
+            <Form.Item name="title" label="Title" rules={[{ required: true }]}>
+              <Input  style={{ height: 30 }}/>
+            </Form.Item>
+            <Form.Item name="description" label="Description">
+              <TextArea rows={3}/>
             </Form.Item>
           </Col>
-          <Col span={12}>
-            <Form.Item
-              name="unit"
-              label="Đơn vị"
-              rules={[{ required: true, message: 'Vui lòng chọn đơn vị' }]}
-            >
-              <Select placeholder="piece" size='large'>
-                <Option value="piece">Cái</Option>
-                <Option value="pair">Cặp</Option>
+          <Col span={8}>
+            <Form.Item label="Upload Image">
+              <Upload name="img" listType="picture" maxCount={1} customRequest={handleUpload} fileList={fileList}
+  onChange={({ fileList }) => setFileList(fileList)}>
+                <Button icon={<UploadOutlined />} style={{ height: 30 }}>Upload Image</Button>
+              </Upload>
+              <Form.Item name="img" noStyle><Input type="hidden" /></Form.Item>
+            </Form.Item>
+            <Form.Item name="category_id" label="Product Category">
+              <Select placeholder="Chọn danh mục" style={{ height: 30 }}
+              onChange={(value) => {
+                  const selected = categories.find(b => b.id === value);
+                  form.setFieldsValue({
+                    category_id: selected?.parent || 'Unknown',
+                  });
+                }}
+              >
+                {categories.map(cat => <Option key={cat.id} value={cat.id}>{cat.parent}</Option>)}
               </Select>
             </Form.Item>
           </Col>
         </Row>
 
         <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="brand_id"
-              label="Thương hiệu"
-              rules={[{ required: true, message: 'Vui lòng chọn thương hiệu' }]}
-            >
-              <Select placeholder="Samsung">
-                <Option value={1}>Samsung</Option>
-                <Option value={2}>Apple</Option>
-                <Option value={3}>Xiaomi</Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="category_id"
-              label="Danh mục"
-              rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
-            >
-              <Select placeholder="Smartphones">
-                <Option value={1}>Smartphones</Option>
-                <Option value={2}>Laptops</Option>
-                <Option value={3}>Accessories</Option>
-              </Select>
-            </Form.Item>
-          </Col>
+          <Col span={6}><Form.Item name="price" label="Price" rules={[{ required: true }]}>
+            <InputNumber style={{ width: '100%' }}  />
+          </Form.Item></Col>
+          <Col span={6}><Form.Item name="sku" label="SKU" rules={[{ required: true }]}>
+            <Input style={{ height: 30 }} />
+          </Form.Item></Col>
+          <Col span={6}><Form.Item name="quantity" label="Quantity" rules={[{ required: true }]}>
+            <InputNumber style={{ width: '100%' }}  />
+          </Form.Item></Col>
+          <Col span={6}><Form.Item name="discount" label="Discount Percentage">
+            <InputNumber style={{ width: '100%' }} />
+          </Form.Item></Col>
         </Row>
 
         <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="price"
-              label="Giá"
-              rules={[{ required: true, message: 'Vui lòng nhập giá' }]}
-            >
-              <InputNumber 
-                style={{ width: '100%' }}
-                formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                parser={value => value.replace(/\$\s?|(,*)/g, '')}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="discount"
-              label="Giảm giá (%)"
-            >
-              <InputNumber 
-                style={{ width: '100%' }}
-                min={0}
-                max={100}
-                formatter={value => `${value}%`}
-                parser={value => value.replace('%', '')}
-              />
-            </Form.Item>
-          </Col>
+          <Col span={12}><Form.Item name="offerDates" label="Start And End Date">
+            <RangePicker style={{ width: '100%' }} />
+          </Form.Item></Col>
         </Row>
 
         <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="quantity"
-              label="Số lượng"
-              rules={[{ required: true, message: 'Vui lòng nhập số lượng' }]}
-            >
-              <InputNumber style={{ width: '100%' }} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="status"
-              label="Trạng thái"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
-            >
-              <Select placeholder="in-stock">
-                <Option value="in-stock">Còn hàng</Option>
-                <Option value="out-of-stock">Hết hàng</Option>
-                <Option value="pre-order">Đặt trước</Option>
-              </Select>
-            </Form.Item>
-          </Col>
+          <Col span={8}><Form.Item name="brand_id" label="Brands">
+            <Select placeholder="Chọn thương hiệu" style={{ height: 30 }} 
+            onChange={(value) => {
+                  const selected = brands.find(b => b.id === value);
+                  form.setFieldsValue({
+                    brand_name: selected?.name || 'Unknown',
+                  });
+                }}>
+              {brands.map(brand => <Option key={brand.id} value={brand.id}>{brand.name}</Option>)}
+            </Select>
+          </Form.Item></Col>
+          <Col span={8}><Form.Item name="unit" label="Unit" rules={[{ required: true }]}>
+            <Input style={{ height: 30 }} />
+          </Form.Item></Col>
         </Row>
 
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="product_type"
-              label="Loại sản phẩm"
-              rules={[{ required: true, message: 'Vui lòng chọn loại sản phẩm' }]}
-            >
-              <Select placeholder="electronics">
-                <Option value="electronics">Điện tử</Option>
-                <Option value="clothing">Quần áo</Option>
-                <Option value="furniture">Nội thất</Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="featured"
-              label="Nổi bật"
-              valuePropName="checked"
-            >
-              <Select placeholder="false">
-                <Option value={true}>Có</Option>
-                <Option value={false}>Không</Option>
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
+        <Form.Item name="tags" label="Product Tags">
+          <Select mode="tags" style={{ height: 30 }} tokenSeparators={[',']}
+                 onChange={(value) => {
+                  console.log("Selected tags:", value);
+                  form.setFieldsValue({ tags: value }); 
+                
+                }}                 open={false}
+ />
+        </Form.Item>
+        <Form.Item name="sizes" label="Sizes">
+          <Select mode="tags" style={{ height: 30 }} tokenSeparators={[',']}
+                //  onChange={(value) => {
+                //   console.log("Selected tags:", value);
+                //   form.setFieldsValue({ sizes: value }); 
+                // }}
+                >
+            {['XS', 'S', 'M', 'L', 'XL', 'XXL'].map(size => (
+              <Option key={size} value={size}>{size}</Option>
+            ))}
+          </Select>
+        </Form.Item>
 
-        <Row gutter={16}>
-          <Col span={24}>
-            <Form.Item
-              name="description"
-              label="Mô tả"
-            >
-              <TextArea rows={4} placeholder="Test product description." />
-            </Form.Item>
-          </Col>
-        </Row>
+        <h3>Additional Information</h3>
+        {additionalInfo.map((item, idx) => (
+          <Row gutter={16} key={idx} align="middle">
+            <Col span={10}>
+              <Input style={{ height: 30 }} placeholder="Key" value={item.key} onChange={e => {
+                const updated = [...additionalInfo];
+                updated[idx].key = e.target.value;
+                setAdditionalInfo(updated);
+              }} />
+            </Col>
+            <Col span={10}>
+              <Input style={{ height: 30 }} placeholder="Value" value={item.value} onChange={e => {
+                const updated = [...additionalInfo];
+                updated[idx].value = e.target.value;
+                setAdditionalInfo(updated);
+              }} />
+            </Col>
+            <Col span={4}>
+              <Button danger icon={<MinusCircleOutlined />} onClick={() => {
+                const updated = [...additionalInfo];
+                updated.splice(idx, 1);
+                setAdditionalInfo(updated);
+              }} />
+            </Col>
+          </Row>
+        ))}
+        <Button onClick={handleAdditionalAdd} icon={<PlusOutlined />}>Add Field</Button>
 
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="video_id"
-              label="ID Video"
-            >
-              <Input placeholder="abc123" />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="sell_count"
-              label="Đã bán"
-            >
-              <InputNumber style={{ width: '100%' }} />
-            </Form.Item>
-          </Col>
-        </Row>
+        <h3 style={{ marginTop: 24 }}>Product Variations</h3>
+        {variations.map((v, index) => (
+          <Row gutter={16} key={index} align="middle">
+            <Col span={5}>
+              <Input style={{ height: 30 }} placeholder="Color Name" value={v.name} onChange={e => {
+                const updated = [...variations];
+                updated[index].name = e.target.value;
+                setVariations(updated);
+              }} />
+            </Col>
+            <Col span={5}>
+              <Input style={{ height: 30 }} placeholder="Color Code" value={v.clrCode} onChange={e => {
+                const updated = [...variations];
+                updated[index].clrCode = e.target.value;
+                setVariations(updated);
+              }} />
+            </Col>
+            <Col span={6}>
+              <Upload listType="picture" maxCount={1} customRequest={(opt) => handleUpload(opt, index)}>
+                <Button style={{ height: 30 }} icon={<UploadOutlined />}>Upload</Button>
+              </Upload>
+            </Col>
+            <Col span={4}>
+              {v.img && <img src={v.img} alt="color" width={50} />}
+            </Col>
+            <Col span={4}>
+              <Button danger icon={<MinusCircleOutlined />} onClick={() => {
+                const updated = [...variations];
+                updated.splice(index, 1);
+                setVariations(updated);
+              }} />
+            </Col>
+          </Row>
+        ))}
+        <Button onClick={handleVariationAdd} icon={<PlusOutlined />}>Add Field</Button>
 
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="offer_start_date"
-              label="Ngày bắt đầu khuyến mãi"
-            >
-              <DatePicker showTime style={{ width: '100%' }} />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="offer_end_date"
-              label="Ngày kết thúc khuyến mãi"
-            >
-              <DatePicker showTime style={{ width: '100%' }} />
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={16}>
-          <Col span={12}>
-            <Form.Item
-              name="sizes"
-              label="Kích cỡ"
-            >
-              <Select mode="tags" placeholder="S, M, L">
-                <Option value="S">S</Option>
-                <Option value="M">M</Option>
-                <Option value="L">L</Option>
-                <Option value="XL">XL</Option>
-              </Select>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              name="tags"
-              label="Tags"
-            >
-              <Select mode="tags" placeholder="tag1, tag2">
-                {tagChildren}
-              </Select>
-            </Form.Item>
-          </Col>
-        </Row>
-
-        <Row gutter={16}>
-          <Col span={24}>
-            <Form.Item
-              name="additional_information"
-              label="Thông tin bổ sung"
-            >
-              <TextArea rows={4} placeholder='{"origin": "Korea"}' />
-            </Form.Item>
-          </Col>
-        </Row>
+        <div style={{ marginTop: 24 }}>
+          <Button type="primary" htmlType="submit" style={{ height: 30 }}>Submit</Button>
+        </div>
       </Form>
     </Drawer>
   );

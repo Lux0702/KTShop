@@ -24,7 +24,7 @@ import {
 const { TextArea } = Input;
 const { Option } = Select;
 import {useUploadImageMutation} from "@/redux/features/admin/cloudinaryApi";
-import {useAddCategoryMutation} from "@/redux/features/admin/categoryApi";
+import {useAddCategoryMutation, } from "@/redux/features/admin/categoryApi";
   
 const CategoryArea = ({dataCategory}) => {
   const [form] = Form.useForm();
@@ -205,7 +205,7 @@ const handleUpload = async ({ file, onSuccess, onError }) => {
       <div
         style={{ flex: 1, background: "#fff", padding: 20, borderRadius: 8 }}
       >
-        <h3>Upload Image</h3>
+        <h3>Add Category</h3>
         <Form form={form} layout="vertical" onFinish={onFinish}>
           <Form.Item name="image" label="Category Image">
             <Upload
