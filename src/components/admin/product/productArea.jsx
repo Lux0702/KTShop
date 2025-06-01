@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Table, Input, Button, Tag, Space, Rate, Image, Select } from "antd";
 import { EditOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import DrawerArea from "@/components/admin/drawer/drawerArea";
 
 const init = [
   {
@@ -15,7 +16,13 @@ const init = [
 ];
 export default function ProductsArea({ dataProduct = init || [] }) {
   const [q, setQ] = useState("");
-
+  const [open, setOpen] = useState(false);
+    const showDrawer = () => {
+      setOpen(true);
+    };
+const onClose = () => {
+      setOpen(false);
+    };
   // 2. Chuẩn hóa dữ liệu với Type Checking
   const normalizedData = useMemo(() => {
     try {
@@ -113,7 +120,7 @@ export default function ProductsArea({ dataProduct = init || [] }) {
             <Option value="in">in-stock</Option>
             <Option value="out">out-of-stock</Option>
           </Select> */}
-          <Button icon={<PlusOutlined />} type="primary">
+          <Button icon={<PlusOutlined />} type="primary" onClick={showDrawer}>
             Add Product
           </Button>
         </Space>
@@ -125,6 +132,8 @@ export default function ProductsArea({ dataProduct = init || [] }) {
         pagination={{ pageSize: 5 }}
         locale={{ emptyText: "No products found" }}
       />
+      <DrawerArea open={open} onClose={onClose} />
     </Space>
+
   );
 }

@@ -8,6 +8,7 @@ const nextConfig = {
       "res.cloudinary.com",
       "picsum.photos",
       "via.placeholder.com",
+      "placehold.co",
     ],
   },
 };
