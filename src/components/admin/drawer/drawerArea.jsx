@@ -8,14 +8,15 @@ import { useUploadImageMutation } from '@/redux/features/admin/cloudinaryApi';
 import { useAddProductMutation, useUpdateProductMutation } from '@/redux/features/admin/productApi';
 import { useGetAllCategoriesQuery } from '@/redux/features/admin/categoryApi';
 import { useGetActiveBrandsQuery } from '@/redux/features/brandApi';
-
+import isEqual from 'lodash/isEqual'; 
 const { TextArea } = Input;
 const { RangePicker } = DatePicker;
 const { Option } = Select;
 
-const DrawerArea = ({ open, onClose, initialValues }) => {
+const DrawerArea = ({ open, onClose,onAddSuccess, initialValues }) => {
 
 
+const [childCategories, setChildCategories] = useState([]);
 
   const [form] = Form.useForm();
   const [variations, setVariations] = useState([]);
@@ -58,7 +59,7 @@ const DrawerArea = ({ open, onClose, initialValues }) => {
     }
   };
 
-  const onFinish = async (values) => {
+const onFinish = async (values) => {
   try {
     const imageURLs = variations.map(v => ({
       color: { name: v.name, clrCode: v.clrCode },
@@ -73,42 +74,97 @@ const DrawerArea = ({ open, onClose, initialValues }) => {
     const selectedBrand = brands.find(b => b.id === values.brand_id);
     const selectedCategory = categories.find(c => c.id === values.category_id);
 
-    const payload = {
-      ...values,
-      imageURLs,
-      additional_information,
-      offer_start_date: values.offerDates?.[0]?.toISOString() || null,
-      offer_end_date: values.offerDates?.[1]?.toISOString() || null,
-      parent: 'featured',
-      children: 'Phone',
-      brand_name: selectedBrand?.name || 'Unknown',
-      category_name: selectedCategory?.parent || 'Unknown',
-      img: values.img,
-      product_type: 'fashion'
-    };
+    const offer_start_date = values.offerDates?.[0]?.toISOString() || null;
+    const offer_end_date = values.offerDates?.[1]?.toISOString() || null;
 
     if (initialValues?.id) {
-      await updateProduct({ id: initialValues.id, ...payload }).unwrap();
-      message.success('Cập nhật sản phẩm thành công');
+      const data = {};
+      if (!isEqual(values.title, initialValues?.title)) data.title = values.title;
+      if (!isEqual(values.description, initialValues?.description)) data.description = values.description;
+      if (!isEqual(values.sku, initialValues?.sku)) data.sku = values.sku;
+      if (!isEqual(values.quantity, initialValues?.quantity)) data.quantity = values.quantity;
+      if (!isEqual(values.price, initialValues?.price)) data.price = values.price;
+      if (!isEqual(values.discount, initialValues?.discount)) data.discount = values.discount;
+      if (!isEqual(values.unit, initialValues?.unit)) data.unit = values.unit;
+      if (!isEqual(values.brand_id, initialValues?.brand_id)) data.brand_id = values.brand_id;
+      if (!isEqual(values.category_id, initialValues?.category_id)) data.category_id = values.category_id;
+      if (!isEqual(values.children, initialValues?.children)) data.children = values.children;
+      if (!isEqual(values.sizes, initialValues?.sizes)) data.sizes = values.sizes;
+      if (!isEqual(values.tags, initialValues?.tags)) data.tags = values.tags;
+      if (!isEqual(values.img, initialValues?.img)) data.img = values.img;
+      if (!isEqual(offer_start_date, initialValues?.offer_start_date)) data.offer_start_date = offer_start_date;
+      if (!isEqual(offer_end_date, initialValues?.offer_end_date)) data.offer_end_date = offer_end_date;
+      if (!isEqual(imageURLs, initialValues?.image_urls)) data.imageURLs = imageURLs;
+      if (!isEqual(additional_information, initialValues?.additional_information)) data.additional_information = additional_information;
+
+      // Các thông tin phụ
+      data.brand_name = selectedBrand?.name || 'Unknown';
+      data.category_name = selectedCategory?.parent || 'Unknown';
+      data.parent = selectedCategory?.parent || 'Unknown';
+      data.product_type = 'fashion';
+
+      if (Object.keys(data).length === 0) {
+        message.info("Không có thay đổi để cập nhật.");
+        return;
+      }
+
+      const res = await updateProduct({ id: initialValues.id, data }).unwrap();
+      message.success("Cập nhật sản phẩm thành công");
+      onClose({ id: initialValues.id, ...initialValues, ...data }); // Cập nhật bảng ngoài nếu cần
     } else {
-      await addProduct(payload).unwrap();
+      const payload = {
+        ...values,
+        imageURLs,
+        additional_information,
+        offer_start_date,
+        offer_end_date,
+        parent: selectedCategory?.parent || 'Unknown',
+        children: values.children,
+        brand_name: selectedBrand?.name || 'Unknown',
+        category_name: selectedCategory?.parent || 'Unknown',
+        img: values.img,
+        product_type: 'fashion'
+      };
+
+      const res = await addProduct(payload).unwrap();
       message.success('Thêm sản phẩm thành công');
+      const normalized = {
+        id: res.data.id,
+        img: res.data.img || "https://via.placeholder.com/50",
+        title: res.data.title || "No Title",
+        sku: res.data.sku || "N/A",
+        quantity: res.data.quantity || 0,
+        price: res.data.price || "0.00",
+        status: ["in-stock", "out-of-stock"].includes(res.data.status)
+          ? res.data.status
+          : "unknown",
+        category_name: res.data.category_name || "",
+      };
+
+      if (onAddSuccess) onAddSuccess(normalized);
+      onClose(); 
     }
 
     form.resetFields();
     setVariations([]);
     setAdditionalInfo([]);
-    onClose();
   } catch (err) {
     message.error(initialValues?.id ? 'Cập nhật thất bại' : 'Thêm sản phẩm thất bại');
+    console.error(err);
   }
 };
+
+
+
 
 useEffect(() => {
     console.log("📥 initialValues:", initialValues);
   if (initialValues) {
     const { image_urls = [], additional_information = [], offer_start_date, offer_end_date, ...rest } = initialValues;
-
+    if (initialValues?.category_id) {
+      const selected = categories.find(c => c.id === initialValues.category_id);
+      setChildCategories(selected?.children || []);
+    }
     if (initialValues?.img) {
         setFileList([
           {
@@ -166,7 +222,7 @@ useEffect(() => {
               <Input  style={{ height: 30 }}/>
             </Form.Item>
             <Form.Item name="description" label="Description">
-              <TextArea rows={3}/>
+              <TextArea rows={8}/>
             </Form.Item>
           </Col>
           <Col span={8}>
@@ -178,17 +234,34 @@ useEffect(() => {
               <Form.Item name="img" noStyle><Input type="hidden" /></Form.Item>
             </Form.Item>
             <Form.Item name="category_id" label="Product Category">
-              <Select placeholder="Chọn danh mục" style={{ height: 30 }}
-              onChange={(value) => {
-                  const selected = categories.find(b => b.id === value);
+              <Select
+                placeholder="Chọn danh mục"
+                style={{ height: 30 }}
+                onChange={(value) => {
+                  const selected = categories.find(c => c.id === value);
                   form.setFieldsValue({
-                    category_id: selected?.parent || 'Unknown',
+                    category_id: value,
+                    category_name: selected?.parent || 'Unknown',
                   });
+                  setChildCategories(selected?.children || []);
+                  form.setFieldsValue({ children: undefined }); // reset children khi đổi category
                 }}
               >
-                {categories.map(cat => <Option key={cat.id} value={cat.id}>{cat.parent}</Option>)}
+                {categories.map(cat => (
+                  <Option key={cat.id} value={cat.id}>
+                    {cat.parent}
+                  </Option>
+                ))}
               </Select>
             </Form.Item>
+            <Form.Item name="children" label="Child Category">
+  <Select placeholder="Chọn loại con" style={{ height: 30 }}>
+    {childCategories.map(child => (
+      <Option key={child} value={child}>{child}</Option>
+    ))}
+  </Select>
+</Form.Item>
+
           </Col>
         </Row>
 

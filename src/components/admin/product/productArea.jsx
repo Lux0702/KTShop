@@ -21,6 +21,8 @@ const init = [
   },
 ];
 export default function ProductsArea({ dataProduct = init || [] }) {
+  const [productList, setProductList] = useState(dataProduct || []);
+
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
@@ -56,18 +58,26 @@ const handleDelete = async (id) => {
     const showDrawer = () => {
       setOpen(true);
     };
-const onClose = () => {
+const onClose = (updatedItem) => {
   setOpen(false);
   setEditingProduct(null);
   setSelectedId(null);
+
+  // Cập nhật dữ liệu nếu có update
+  if (updatedItem) {
+    setProductList(prev =>
+      prev.map(p => (p.id === updatedItem.id ? { ...p, ...updatedItem } : p))
+    );
+  }
 };
+
 
   // 2. Chuẩn hóa dữ liệu với Type Checking
   const normalizedData = useMemo(() => {
     try {
-      if (!Array.isArray(dataProduct)) return initData;
+      if (!Array.isArray(productList)) return initData;
 
-      return dataProduct.map((item) => ({
+      return productList.map((item) => ({
         id: Number(item.id) || Math.random(),
         img: String(item.img || "https://via.placeholder.com/50"),
         title: String(item.title || "No Title"),
@@ -83,24 +93,25 @@ const onClose = () => {
       console.error("Data normalization failed:", error);
       return initData;
     }
-  }, [dataProduct]);
+  }, [productList]);
 
   // 3. Filter với kiểm tra an toàn
-  const filteredData = useMemo(() => {
-    const query = q.toLowerCase();
-    return normalizedData.filter((item) => {
-      try {
-        return (
-          item.title.toLowerCase().includes(query) ||
-          item.sku.toLowerCase().includes(query) ||
-          (item.category_name &&
-            item.category_name.toLowerCase().includes(query))
-        );
-      } catch {
-        return false;
-      }
-    });
-  }, [normalizedData, q]);
+const filteredData = useMemo(() => {
+  const query = q.toLowerCase();
+  return normalizedData.filter((item) => {
+    try {
+      return (
+        item.title.toLowerCase().includes(query) ||
+        item.sku.toLowerCase().includes(query) ||
+        (item.category_name &&
+          item.category_name.toLowerCase().includes(query))
+      );
+    } catch {
+      return false;
+    }
+  });
+}, [normalizedData, q]);
+
 
   // 4. Columns đơn giản nhất có thể
   const columns = [
@@ -154,7 +165,9 @@ const onClose = () => {
         <Input.Search
           placeholder="Search by product name"
           onSearch={setQ}
+          value={q}
           style={{ maxWidth: 300 }}
+          onChange={(e) => setQ(e.target.value)}
         />
         <Space>
           <span>Status:</span>
@@ -179,7 +192,9 @@ const onClose = () => {
         pagination={{ pageSize: 5 }}
         locale={{ emptyText: "No products found" }}
       />
-<DrawerArea open={open} onClose={onClose} initialValues={editingProduct} />
+<DrawerArea open={open} onClose={onClose} onAddSuccess={(newProduct) => {
+  setProductList(prev => [newProduct, ...prev]); // cập nhật thêm vào đầu bảng
+}} />
     </Space>
 
   );
