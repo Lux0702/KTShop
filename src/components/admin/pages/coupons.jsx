@@ -47,6 +47,7 @@ export default function CouponManager() {
   };
 
   const handleSubmit = async (values) => {
+
   const payload = {
     ...values,
     logo: logoUrl,
@@ -86,7 +87,6 @@ export default function CouponManager() {
     message.error("Thao tác thất bại");
   }
 };
-
 
   const handleUpload = async ({ file, onSuccess, onError }) => {
     const formData = new FormData();

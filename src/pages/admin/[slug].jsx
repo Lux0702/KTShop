@@ -12,6 +12,8 @@ const Coupon = dynamic(() => import("../../components/admin/pages/coupons"));
 const Profile = dynamic(() => import("../../components/admin/pages/profile"));
 const Staff = dynamic(() => import("../../components/admin/pages/staff"));
 const Login  = dynamic(() => import("../../components/admin/pages/login"));
+const Reviews = dynamic(() => import("../../components/admin/pages/reviews"));
+
 const allowedRoles = ["Admin", "Manager", "CEO"];
 
 const AdminSlugPage = () => {
@@ -61,6 +63,9 @@ useEffect(() => {
         return <Brand />;
       case "coupons":
         return <Coupon />;
+        case "reviews":
+        return <Reviews />;
+
       case "profile":
         return <Profile />;
       case "staff":
