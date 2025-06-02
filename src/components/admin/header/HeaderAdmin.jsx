@@ -4,22 +4,19 @@ import { useRouter } from "next/router";
 
 const HeaderAdmin = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState(null);
   const dropdownRef = useRef(null);
   const avatarButtonRef = useRef(null);
   const router = useRouter();
   const { slug } = router.query;
 
-  const navigateTo = (path) => {
-    setDropdownOpen(false);
-    router.push(path);
-  };
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
-  
   useEffect(() => {
+    const storedUser = localStorage.getItem("adminUser");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+
     const handleClickOutside = (event) => {
-      // Kiểm tra xem click có nằm ngoài dropdown và avatar button không
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
@@ -30,51 +27,47 @@ const HeaderAdmin = () => {
       }
     };
 
-    // Thêm event listener khi component mount
     document.addEventListener("click", handleClickOutside);
-
-    // Dọn dẹp event listener khi component unmount
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminUser");
+    router.push("/admin/login");
+  };
+
+  const navigateTo = (path) => {
+    setDropdownOpen(false);
+    router.push(path);
+  };
+
   return (
     <header className="header-admin">
-      <h1 className="title">{ slug?.toUpperCase()}</h1>
+      <h1 className="title">{slug?.toUpperCase()}</h1>
 
       <div className="right-section">
         <button className="notification-button">
-          <span className="material-icons">
-            <Icons.Notifications />
-          </span>
+          <Icons.Notifications />
           <span className="badge">3</span>
         </button>
 
         <div className="avatar-menu">
           <button
             className="avatar-button"
-            onClick={toggleDropdown}
+            onClick={() => setDropdownOpen(!dropdownOpen)}
             ref={avatarButtonRef}
           >
-            <img src="/avatar.jpg" alt="Avatar" />
+            <img src={user?.image || "/avatar.jpg"} alt="Avatar" />
           </button>
 
           {dropdownOpen && (
             <div className="dropdown" ref={dropdownRef}>
               <ul>
-                <li>
-                  <button onClick={() => navigateTo("/admin/dashboard")}>
-                    Dashboard
-                  </button>
-                </li>
-                <li>
-                  <button onClick={() => navigateTo("/admin/profile")}>
-                    Account Settings
-                  </button>
-                </li>
-                <li>
-                  <button className="logout">Logout</button>
-                </li>
+                <li><strong>{user?.name || "Admin"}</strong></li>
+                <li><button onClick={() => navigateTo("/admin/dashboard")}>Dashboard</button></li>
+                <li><button onClick={() => navigateTo("/admin/profile")}>Account Settings</button></li>
+                <li><button onClick={handleLogout} className="logout">Logout</button></li>
               </ul>
             </div>
           )}
@@ -83,5 +76,6 @@ const HeaderAdmin = () => {
     </header>
   );
 };
+
 
 export default HeaderAdmin;
