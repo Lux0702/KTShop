@@ -9,11 +9,11 @@ export const menuItems = [
   { icon: Icons.Reviews, label: "Reviews", path: "/admin/reviews" },
   { icon: Icons.Coupons, label: "Coupons", path: "/admin/coupons" },
   { icon: Icons.Profile, label: "Profile", path: "/admin/profile" },
-  {
-    icon: Icons.OnlineStore,
-    label: "Online store",
-    path: "/admin/online-store",
-  },
+  // {
+  //   icon: Icons.OnlineStore,
+  //   label: "Online store",
+  //   path: "/admin/online-store",
+  // },
   { icon: Icons.Staff, label: "Our Staff", path: "/admin/staff" },
-  { icon: Icons.Pages, label: "Pages", path: "/admin/pages" },
+  // { icon: Icons.Pages, label: "Pages", path: "/admin/pages" },
 ];

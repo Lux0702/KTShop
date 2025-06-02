@@ -1,19 +1,56 @@
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import AdminLayout from "@/layout/adminLayout";
-const Dashboard = dynamic(() =>
-  import("../../components/admin/pages/dashboard")
-);
+
+const Dashboard = dynamic(() => import("../../components/admin/pages/dashboard"));
 const Products = dynamic(() => import("../../components/admin/pages/products"));
 const Category = dynamic(() => import("../../components/admin/pages/category"));
 const Orders = dynamic(() => import("../../components/admin/pages/orders"));
 const Brand = dynamic(() => import("../../components/admin/pages/brand"));
+const Coupon = dynamic(() => import("../../components/admin/pages/coupons"));
+const Profile = dynamic(() => import("../../components/admin/pages/profile"));
+const Staff = dynamic(() => import("../../components/admin/pages/staff"));
+const Login  = dynamic(() => import("../../components/admin/pages/login"));
+const allowedRoles = ["Admin", "Manager", "CEO"];
+
 const AdminSlugPage = () => {
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const slug = query.slug;
+
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+useEffect(() => {
+  // Nếu là trang login thì không cần kiểm tra quyền
+  if (slug === "login") {
+    setIsAuthorized(true);
+    return;
+  }
+
+  const userData = localStorage.getItem("adminUser");
+  if (!userData) {
+    push("/admin/login");
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(userData);
+    if (allowedRoles.includes(parsed.role)) {
+      setIsAuthorized(true);
+    } else {
+      push("/admin/login");
+    }
+  } catch (error) {
+    console.error("Failed to parse user data", error);
+    push("/admin/login");
+  }
+}, [slug]);
+
 
   const renderPage = () => {
     switch (slug) {
+      case "login":
+        return <Login />;
       case "products":
         return <Products />;
       case "orders":
@@ -21,7 +58,13 @@ const AdminSlugPage = () => {
       case "category":
         return <Category />;
       case "brand":
-        return <Brand/>
+        return <Brand />;
+      case "coupons":
+        return <Coupon />;
+      case "profile":
+        return <Profile />;
+      case "staff":
+        return <Staff />;
       case "dashboard":
       case undefined:
         return <Dashboard />;
@@ -30,9 +73,14 @@ const AdminSlugPage = () => {
     }
   };
 
-  return (
-    <AdminLayout>{renderPage()}</AdminLayout>
-  );
+ if (!isAuthorized) return null;
+
+if (slug === "login") {
+  return renderPage(); // render trang login trực tiếp
+}
+
+return <AdminLayout>{renderPage()}</AdminLayout>;
+
 };
 
 export default AdminSlugPage;
