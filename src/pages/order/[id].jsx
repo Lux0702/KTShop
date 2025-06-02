@@ -9,6 +9,7 @@ import Wrapper from "@/layout/wrapper";
 import HeaderTwo from "@/layout/headers/header-2";
 import Footer from "@/layout/footers/footer";
 import logo from "@assets/img/logo/logo.svg";
+import logo1 from "@assets/img/logo/KTShop.png";
 import ErrorMsg from "@/components/common/error-msg";
 import { useGetUserOrderByIdQuery } from "@/redux/features/order/orderApi";
 import PrdDetailsLoader from "@/components/loader/prd-details-loader";
@@ -26,7 +27,8 @@ const SingleOrder = ({ params }) => {
     content = <ErrorMsg msg="There was an error" />;
   }
   if (!isLoading && !isError) {
-    const { name, country, city, contact, invoice, createdAt, cart, shippingCost, discount, totalAmount,paymentMethod} = order.order;
+    console.log("order:", order)
+    const { name, country, city, contact, invoice, createdAt, cart, shipping_cost, discount,total_amount, totalAmount,payment_method} = order.order;
     content = (
       <>
         <section className="invoice__area pt-120 pb-120">
@@ -48,8 +50,8 @@ const SingleOrder = ({ params }) => {
                       <div className="row align-items-end">
                         <div className="col-md-4 col-sm-6">
                           <div className="invoice__left">
-                            <Image src={logo} alt="logo" />
-                            <p>2879 Elk Creek Road <br /> Stone Mountain, Georgia </p>
+                            <Image src={logo1} alt="logo" />
+                            <p>01 Võ Văn Ngân <br /> Thủ Đức, HCM </p>
                           </div>
                         </div>
                         <div className="col-md-8 col-sm-6">
@@ -113,26 +115,26 @@ const SingleOrder = ({ params }) => {
                   <div className="col-lg-3 col-md-4">
                     <div className="invoice__payment-method mb-30">
                       <h5 className="mb-0">Payment Method</h5>
-                      <p className="tp-font-medium text-uppercase">{paymentMethod}</p>
+                      <p className="tp-font-medium text-uppercase">{payment_method}</p>
                     </div>
                   </div>
                   <div className="col-lg-3 col-md-4">
                     <div className="invoice__shippint-cost mb-30">
                       <h5 className="mb-0">Shipping Cost</h5>
-                      <p className="tp-font-medium">${shippingCost}</p>
+                      <p className="tp-font-medium">${shipping_cost}</p>
                     </div>
                   </div>
                   <div className="col-lg-3 col-md-4">
                     <div className="invoice__discount-cost mb-30">
                       <h5 className="mb-0">Discount</h5>
-                      <p className="tp-font-medium">${discount.toFixed(2)}</p>
+                      <p className="tp-font-medium">${Number(discount).toFixed(2)}</p>
                     </div>
                   </div>
                   <div className="col-lg-3 col-md-4">
                     <div className="invoice__total-ammount mb-30">
                       <h5 className="mb-0">Total Ammount</h5>
                       <p className="tp-font-medium text-danger">
-                        <strong>${parseInt(totalAmount).toFixed(2)}</strong>
+                        <strong>${parseInt(total_amount).toFixed(2)}</strong>
                       </p>
                     </div>
                   </div>

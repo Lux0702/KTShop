@@ -13,11 +13,11 @@ import { add_to_compare } from '@/redux/features/compareSlice';
 import { handleModalClose } from '@/redux/features/productModalSlice';
 
 const DetailsWrapper = ({ productItem, handleImageActive, activeImg, detailsBottom = false }) => {
-  const { sku, img, title, imageURLs, category, description, discount, price, status, reviews, tags, offerDate } = productItem || {};
+  const { sku, img, title, imageURLs,image_urls, category,category_name, description, discount, price, status, reviews, tags, offerDate } = productItem || {};
   const [ratingVal, setRatingVal] = useState(0);
   const [textMore, setTextMore] = useState(false);
   const dispatch = useDispatch()
-
+  console.log("productItem",productItem)
   useEffect(() => {
     if (reviews && reviews.length > 0) {
       const rating =
@@ -47,7 +47,7 @@ const DetailsWrapper = ({ productItem, handleImageActive, activeImg, detailsBott
   return (
     <div className="tp-product-details-wrapper">
       <div className="tp-product-details-category">
-        <span>{category.name}</span>
+        <span>{category?.parent || category_name}</span>
       </div>
       <h3 className="tp-product-details-title">{title}</h3>
 
@@ -79,16 +79,16 @@ const DetailsWrapper = ({ productItem, handleImageActive, activeImg, detailsBott
             </span>
           </>
         ) : (
-          <span className="tp-product-details-price new-price">${price.toFixed(2)}</span>
+          <span className="tp-product-details-price new-price">${(Number(price)).toFixed(2)}</span>
         )}
       </div>
 
       {/* variations */}
-      {imageURLs.some(item => item?.color && item?.color?.name) && <div className="tp-product-details-variation">
+      {(imageURLs|| image_urls).some(item => item?.color && item?.color?.name) && <div className="tp-product-details-variation">
         <div className="tp-product-details-variation-item">
           <h4 className="tp-product-details-variation-title">Color :</h4>
           <div className="tp-product-details-variation-list">
-            {imageURLs.map((item, i) => (
+            {(imageURLs|| image_urls).map((item, i) => (
               <button onClick={() => handleImageActive(item)} key={i} type="button"
                 className={`color tp-color-variation-btn ${item.img === activeImg ? "active" : ""}`} >
                 <span

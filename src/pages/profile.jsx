@@ -1,32 +1,55 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
-// internal
+
+// internal components
 import SEO from "@/components/seo";
 import Wrapper from "@/layout/wrapper";
 import HeaderTwo from "@/layout/headers/header-2";
 import Footer from "@/layout/footers/footer";
 import ProfileArea from "@/components/my-account/profile-area";
-import { useGetUserOrdersQuery } from "@/redux/features/order/orderApi";
+import { useGetOrdersOfUserQuery } from "@/redux/features/order/orderApi";
 import Loader from "@/components/loader/loader";
 
 const ProfilePage = () => {
   const router = useRouter();
-  const {data: orderData, isError, isLoading, } = useGetUserOrdersQuery();
+  const [user, setUser] = useState(null);
+
+  // Lấy user từ cookie
   useEffect(() => {
-    const isAuthenticate = Cookies.get("userInfo");
-    if (!isAuthenticate) {
+    const cookieData = Cookies.get("userInfo");
+    if (cookieData) {
+      try {
+        const parsed = JSON.parse(cookieData);
+        console.log("parséd")
+        setUser(parsed.user);
+      } catch (err) {
+        console.error("Failed to parse cookie", err);
+        router.push("/login");
+      }
+    } else {
       router.push("/login");
     }
   }, [router]);
 
-  if (isLoading) {
+  // Gọi API khi có user
+const { data: orderData, refetch, isLoading } = useGetOrdersOfUserQuery(user?.id, {
+  skip: !user?.id, 
+});
+useEffect(() => {
+  if (user?.id) {
+    console.log("user?.id",user?.id)
+    refetch(); // 🔁 gọi lại API sau khi user đã sẵn sàng
+  }
+}, [user]);
+  // Hiển thị loading khi đang fetch
+  if (!user || isLoading) {
     return (
       <div
         className="d-flex align-items-center justify-content-center"
         style={{ height: "100vh" }}
       >
-        <Loader loading={isLoading} />
+        <Loader loading={true} />
       </div>
     );
   }

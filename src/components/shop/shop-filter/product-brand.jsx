@@ -35,7 +35,7 @@ const ProductBrand = ({setCurrPage,shop_right=false}) => {
     content = <ErrorMsg msg="No Brands found!" />;
   } else if (!isLoading && !isError && brands?.result?.length > 0) {
     const all_brands = brands.result;
-    const sortedBrands = all_brands.slice().sort((a, b) => b.products.length - a.products.length);
+    const sortedBrands = all_brands.slice().sort((a, b) => b.products?.length - a.products?.length);
     const brand_items = sortedBrands.slice(0,6);
     
     content = brand_items.map((b) => (
