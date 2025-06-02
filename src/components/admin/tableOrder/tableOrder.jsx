@@ -65,8 +65,8 @@ const InvoiceTable = ({ invoices = [], page = 1, totalPages = 1 }) => {
                 )}
                 <span>{inv?.user?.name || "Unknow User"}</span>
               </td>
-              <td>${inv.totalAmount.toFixed(2)}</td>
-              <td>{inv.paymentMethod}</td>
+              <td>${inv?.totalAmount?.toFixed(2)}</td>
+              <td>{inv?.paymentMethod}</td>
               <td>
                 {tagEnum[inv.status] || (
                   <Tag color="default">Unknown</Tag>
