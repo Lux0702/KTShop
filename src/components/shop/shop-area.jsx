@@ -17,7 +17,7 @@ const ShopArea = ({ all_products, products, otherProps }) => {
   const [filteredRows, setFilteredRows] = useState(products);
   const [pageStart, setPageStart] = useState(0);
   const [countOfPage, setCountOfPage] = useState(12);
-
+  console.log("all_products", all_products)
   const paginatedData = (items, startPage, pageCount) => {
     setFilteredRows(items);
     setPageStart(startPage);

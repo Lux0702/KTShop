@@ -54,6 +54,12 @@ export const authApi = apiSlice.injectEndpoints({
       providesTags: (result, error, arg) => [{ type: "UserOrder", id: arg }],
       keepUnusedDataFor: 600,
     }),
+        getOrdersOfUser: builder.query({
+      query: (id) => `https://ktshop.onrender.com/api/user-order?user_id=${id}`,
+      providesTags: (result, error, arg) => [{ type: "UserOrder", id: arg }],
+      keepUnusedDataFor: 600,
+    }),
+
   }),
 });
 
@@ -61,5 +67,6 @@ export const {
   useCreatePaymentIntentMutation,
   useSaveOrderMutation,
   useGetUserOrderByIdQuery,
-  useGetUserOrdersQuery,
+  useGetUserOrdersQuery, 
+  useGetOrdersOfUserQuery,
 } = authApi;

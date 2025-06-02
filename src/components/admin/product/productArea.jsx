@@ -192,9 +192,15 @@ const filteredData = useMemo(() => {
         pagination={{ pageSize: 5 }}
         locale={{ emptyText: "No products found" }}
       />
-<DrawerArea open={open} onClose={onClose} onAddSuccess={(newProduct) => {
-  setProductList(prev => [newProduct, ...prev]); // cập nhật thêm vào đầu bảng
-}} />
+<DrawerArea
+  open={open}
+  onClose={onClose}
+  onAddSuccess={(newProduct) => {
+    setProductList(prev => [newProduct, ...prev]);
+  }}
+  initialValues={editingProduct}
+/>
+
     </Space>
 
   );

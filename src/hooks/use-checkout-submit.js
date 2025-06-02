@@ -11,11 +11,11 @@ import { set_shipping } from "@/redux/features/order/orderSlice";
 import { set_coupon } from "@/redux/features/coupon/couponSlice";
 import { notifyError, notifySuccess } from "@/utils/toast";
 import {useCreatePaymentIntentMutation,useSaveOrderMutation} from "@/redux/features/order/orderApi";
-import { useGetOfferCouponsQuery } from "@/redux/features/coupon/couponApi";
+import { useGetCouponsQuery } from "@/redux/features/coupon/couponApi";
 
 const useCheckoutSubmit = () => {
   // offerCoupons
-  const { data: offerCoupons, isError, isLoading } = useGetOfferCouponsQuery();
+  const { data: offerCoupons, isError, isLoading } = useGetCouponsQuery();
   // addOrder
   const [saveOrder, {}] = useSaveOrderMutation();
   // createPaymentIntent
@@ -202,17 +202,17 @@ const useCheckoutSubmit = () => {
       email: data.email,
       city: data.city,
       country: data.country,
-      zipCode: data.zipCode,
-      shippingOption: data.shippingOption,
+      zip_code: data.zipCode,
+      shipping_option: data.shippingOption,
       status: "Pending",
       cart: cart_products,
-      paymentMethod: data.payment,
-      subTotal: total,
-      shippingCost: shippingCost,
+      payment_method: data.payment,
+      sub_total: total,
+      shipping_cost: shippingCost,
       discount: discountAmount,
-      totalAmount: cartTotal,
-      orderNote:data.orderNote,
-      user: `${user?._id}`,
+      total_amount: cartTotal,
+      order_note:data.orderNote,
+      user_id: `${user?.id || user?.userid}`,
     };
     if (data.payment === 'Card') {
       if (!stripe || !elements) {
@@ -250,7 +250,7 @@ const useCheckoutSubmit = () => {
           localStorage.removeItem("couponInfo");
           setIsCheckoutSubmit(false)
           notifySuccess("Your Order Confirmed!");
-          router.push(`/order/${res.data?.order?._id}`);
+          router.push(`/order/${res.data?.order?.id}`);
         }
       })
     }

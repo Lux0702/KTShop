@@ -4,6 +4,7 @@ import React from "react";
 
 const MyOrders = ({ orderData }) => {
   const order_items = orderData?.orders;
+  console.log("order_items",order_items)
   return (
     <div className="profile__ticket table-responsive">
       {!order_items ||
@@ -34,7 +35,7 @@ const MyOrders = ({ orderData }) => {
           <tbody>
             {order_items.map((item, i) => (
               <tr key={i}>
-                <th scope="row">#{item._id.substring(20, 25)}</th>
+                <th scope="row">#{item.id}</th>
                 <td data-info="title">
                   {dayjs(item.createdAt).format("MMMM D, YYYY")}
                 </td>

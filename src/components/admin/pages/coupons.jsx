@@ -47,38 +47,46 @@ export default function CouponManager() {
   };
 
   const handleSubmit = async (values) => {
-    const payload = {
-      ...values,
-      logo: logoUrl,
-      start_time: values.dateRange?.[0]?.toISOString() || null,
-      end_time: values.dateRange?.[1]?.toISOString() || null,
-    };
-    delete payload.dateRange;
 
-    try {
-      if (editing) {
-        const data = {};
-        for (let key in payload) {
-          if (payload[key] !== editing[key]) data[key] = payload[key];
-        }
-        if (Object.keys(data).length > 0) {
-          await updateCoupon({ id: editing.id, data });
-          message.success("Cập nhật thành công");
-        } else {
-          message.info("Không có thay đổi");
-        }
-      } else {
-        await addCoupon(payload);
-        message.success("Thêm thành công");
-      }
-      setVisible(false);
-      setEditing(null);
-      form.resetFields();
-      setLogoUrl("");
-    } catch {
-      message.error("Thao tác thất bại");
-    }
+  const payload = {
+    ...values,
+    logo: logoUrl,
+    start_time: values.dateRange?.[0]?.toISOString() || null,
+    end_time: values.dateRange?.[1]?.toISOString() || null,
   };
+  delete payload.dateRange;
+
+  // ⚠️ Kiểm tra thiếu thời gian kết thúc
+  if ( !payload.end_time) {
+    message.error("Vui lòng chọn đầy đủ thời gian bắt đầu và kết thúc");
+    return;
+  }
+
+  try {
+    if (editing) {
+      const data = {};
+      for (let key in payload) {
+        if (payload[key] !== editing[key]) data[key] = payload[key];
+      }
+      if (Object.keys(data).length > 0) {
+        await updateCoupon({ id: editing.id, data });
+        message.success("Cập nhật thành công");
+      } else {
+        message.info("Không có thay đổi");
+      }
+    } else {
+      await addCoupon(payload);
+      message.success("Thêm thành công");
+    }
+
+    setVisible(false);
+    setEditing(null);
+    form.resetFields();
+    setLogoUrl("");
+  } catch {
+    message.error("Thao tác thất bại");
+  }
+};
 
   const handleUpload = async ({ file, onSuccess, onError }) => {
     const formData = new FormData();
@@ -173,7 +181,7 @@ export default function CouponManager() {
       <Modal open={visible} title={editing ? "Edit Coupon" : "Add Coupon"} onCancel={() => setVisible(false)} footer={null}>
         <Upload
           customRequest={handleUpload}
-          showUploadList={false}
+          showUploadList={true}
           accept=".jpg,.png,.jpeg,.webp"
           
         >

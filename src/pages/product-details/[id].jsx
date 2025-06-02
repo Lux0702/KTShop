@@ -12,6 +12,7 @@ import PrdDetailsLoader from '@/components/loader/prd-details-loader';
 
 const ProductDetailsPage = ({ query }) => {
   const { data: product, isLoading, isError } = useGetProductQuery(query.id);
+  console.log("product detail",product)
   // decide what to render
   let content = null;
   if (isLoading) {
@@ -23,7 +24,7 @@ const ProductDetailsPage = ({ query }) => {
   if (!isLoading && !isError && product) {
     content = (
       <>
-        <ProductDetailsBreadcrumb category={product.category.name} title={product.title} />
+        <ProductDetailsBreadcrumb category={product.category_name} title={product.title} />
         <ProductDetailsArea productItem={product} />
       </>
     );

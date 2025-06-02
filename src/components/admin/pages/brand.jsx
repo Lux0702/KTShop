@@ -98,7 +98,16 @@ export default function Brand() {
       } else {
         const res = await addBrand({ ...values, logo: logoUrl }).unwrap();
         message.success("Thêm brand thành công");
-        setLocalBrands([res.result, ...brands]);
+        const newBrand = {
+            id: res.result.id,
+            name: res.result.name || "No name",
+            email: res.result.email || "",
+            website: res.result.website || "",
+            location: res.result.location || "",
+            logo: res.result.logo || "https://via.placeholder.com/40",
+          };
+
+          setLocalBrands([newBrand, ...brands]);
       }
       handleCloseModal();
       refetch();
@@ -124,7 +133,7 @@ export default function Brand() {
       dataIndex: "name",
       render: (_, record) => (
         <Space>
-          <Image src={record.logo} width={30} height={30} />
+          <Image src={record?.logo} width={30} height={30} />
           <strong>{record.name}</strong>
         </Space>
       ),

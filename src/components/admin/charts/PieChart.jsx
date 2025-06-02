@@ -17,7 +17,7 @@ const PieChart = ({pieData}) => {
   ];
 
   const data = {
-    labels: categoryData.map((item) =>  toUpperCaseFistLetter( item._id===null ? 'Unknown': item._id)),
+    labels: categoryData.map((item) =>  toUpperCaseFistLetter( !item.id ? 'Unknown': item.id)),
     datasets: [
       {
         label: "Category Distribution",
