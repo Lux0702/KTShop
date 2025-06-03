@@ -10,11 +10,11 @@ import { add_to_wishlist } from "@/redux/features/wishlist-slice";
 import { notifyError, notifySuccess } from "@/utils/toast";
 
 const ProductItem = ({ product, prdCenter = false, primary_style = false }) => {
-  const { _id, img, title, discount, price, tags, status } = product || {};
+  const { id, img, title, discount, price, tags, status } = product || {};
   const { cart_products } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
-  const isAddedToCart = cart_products.some((prd) => prd._id === _id);
-  const isAddedToWishlist = wishlist.some((prd) => prd._id === _id);
+  const isAddedToCart = cart_products.some((prd) => prd.id === id);
+  const isAddedToWishlist = wishlist.some((prd) => prd.id === id);
   const dispatch = useDispatch();
   const accessToken = useSelector((state) => state.auth.accessToken);
 
@@ -42,8 +42,22 @@ const ProductItem = ({ product, prdCenter = false, primary_style = false }) => {
       } ${prdCenter ? "text-center" : ""}`}
     >
       <div className="tp-product-thumb-3 mb-15 fix p-relative z-index-1">
-        <Link href={`/product-details/${_id}`}>
-          <Image src={img} alt="product image" width={282} height={320} />
+        <Link href={`/product-details/${id}`}>
+          <div
+            style={{
+              minHeight: 302,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "#f5f5f5",
+            }}
+          >
+            {img ? (
+              <Image src={img} alt="product img" width={284} height={302} />
+            ) : (
+              <span style={{ color: "#999" }}>No Image</span>
+            )}
+          </div>
         </Link>
 
         <div className="tp-product-badge">
@@ -125,10 +139,12 @@ const ProductItem = ({ product, prdCenter = false, primary_style = false }) => {
           <span>{tags[1]}</span>
         </div>
         <h3 className="tp-product-title-3">
-          <Link href={`/product-details/${_id}`}>{title}</Link>
+          <Link href={`/product-details/${id}`}>{title}</Link>
         </h3>
         <div className="tp-product-price-wrapper-3">
-          <span className="tp-product-price-3">${price.toFixed(2)}</span>
+          <span className="tp-product-price-3">
+            ${Number(price).toFixed(2)}
+          </span>
         </div>
       </div>
     </div>

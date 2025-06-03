@@ -35,7 +35,7 @@ const CheckoutOrderArea = ({ checkoutData }) => {
 
           {/*  item list */}
           {cart_products.map((item) => (
-            <li key={item._id} className="tp-order-info-list-desc">
+            <li key={item.id} className="tp-order-info-list-desc">
               <p>
                 {item.title} <span> x {item.orderQuantity}</span>
               </p>
@@ -43,61 +43,68 @@ const CheckoutOrderArea = ({ checkoutData }) => {
             </li>
           ))}
 
-          {/*  shipping */}
-          <li className="tp-order-info-list-shipping">
-            <span>Shipping</span>
-            <div className="tp-order-info-list-shipping-item d-flex flex-column align-items-end">
-              <span>
-                <input
-                  {...register(`shippingOption`, {
-                    required: `Shipping Option is required!`,
-                  })}
-                  id="flat_shipping"
-                  type="radio"
-                  name="shippingOption"
-                />
-                <label
-                  onClick={() => handleShippingCost(60)}
-                  htmlFor="flat_shipping"
-                >
-                  Delivery: Today Cost :<span>$60.00</span>
-                </label>
-                <ErrorMsg msg={errors?.shippingOption?.message} />
-              </span>
-              <span>
-                <input
-                  {...register(`shippingOption`, {
-                    required: `Shipping Option is required!`,
-                  })}
-                  id="flat_rate"
-                  type="radio"
-                  name="shippingOption"
-                />
-                <label
-                  onClick={() => handleShippingCost(20)}
-                  htmlFor="flat_rate"
-                >
-                  Delivery: 7 Days Cost: <span>$20.00</span>
-                </label>
-                <ErrorMsg msg={errors?.shippingOption?.message} />
-              </span>
-            </div>
-          </li>
+          {/* shipping */}
+          {total > 200 ? (
+            <li className="tp-order-info-list-shipping">
+              <span>Shipping</span>
+              <div className="tp-order-info-list-shipping-item d-flex flex-column align-items-end">
+                <span className="text-success fw-bold">
+                  Free Shipping (Orders over $200)
+                </span>
+              </div>
+            </li>
+          ) : (
+            <li className="tp-order-info-list-shipping">
+              <span>Shipping</span>
+              <div className="tp-order-info-list-shipping-item d-flex flex-column align-items-end">
+                <span>
+                  <input
+                    {...register(`shippingOption`, {
+                      required: `Shipping Option is required!`,
+                    })}
+                    id="flat_shipping"
+                    type="radio"
+                    name="shippingOption"
+                    onClick={() => handleShippingCost(60)}
+                  />
+                  <label htmlFor="flat_shipping">
+                    Delivery: Today Cost :<span>$60.00</span>
+                  </label>
+                  <ErrorMsg msg={errors?.shippingOption?.message} />
+                </span>
+                <span>
+                  <input
+                    {...register(`shippingOption`, {
+                      required: `Shipping Option is required!`,
+                    })}
+                    id="flat_rate"
+                    type="radio"
+                    name="shippingOption"
+                    onClick={() => handleShippingCost(20)}
+                  />
+                  <label htmlFor="flat_rate">
+                    Delivery: 7 Days Cost: <span>$20.00</span>
+                  </label>
+                  <ErrorMsg msg={errors?.shippingOption?.message} />
+                </span>
+              </div>
+            </li>
+          )}
 
-           {/*  subtotal */}
-           <li className="tp-order-info-list-subtotal">
+          {/*  subtotal */}
+          <li className="tp-order-info-list-subtotal">
             <span>Subtotal</span>
             <span>${total.toFixed(2)}</span>
           </li>
 
-           {/*  shipping cost */}
-           <li className="tp-order-info-list-subtotal">
+          {/*  shipping cost */}
+          <li className="tp-order-info-list-subtotal">
             <span>Shipping Cost</span>
             <span>${shippingCost.toFixed(2)}</span>
           </li>
 
-           {/* discount */}
-           <li className="tp-order-info-list-subtotal">
+          {/* discount */}
+          <li className="tp-order-info-list-subtotal">
             <span>Discount</span>
             <span>${discountAmount.toFixed(2)}</span>
           </li>
@@ -120,7 +127,11 @@ const CheckoutOrderArea = ({ checkoutData }) => {
             name="payment"
             value="Card"
           />
-          <label onClick={() => setShowCard(true)} htmlFor="back_transfer" data-bs-toggle="direct-bank-transfer">
+          <label
+            onClick={() => setShowCard(true)}
+            htmlFor="back_transfer"
+            data-bs-toggle="direct-bank-transfer"
+          >
             Credit Card
           </label>
           {showCard && (

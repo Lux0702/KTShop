@@ -38,8 +38,8 @@ const ReviewForm = ({product_id}) => {
     }
     else {
       addReview({
-        userId: user?._id,
-        productId: product_id,
+        user_id: user?.id,
+        product_id: product_id,
         rating: rating,
         comment: data.comment,
       }).then((result) => {
@@ -83,7 +83,7 @@ const ReviewForm = ({product_id}) => {
               name="name"
               id="name"
               type="text"
-              placeholder="Shahnewaz Sakil"
+              placeholder="Thiên Khang"
             />
           </div>
           <div className="tp-product-details-review-input-title">
@@ -98,7 +98,7 @@ const ReviewForm = ({product_id}) => {
               name="email"
               id="email"
               type="email"
-              placeholder="shofy@mail.com"
+              placeholder="KTShop@mail.com"
             />
           </div>
           <div className="tp-product-details-review-input-title">

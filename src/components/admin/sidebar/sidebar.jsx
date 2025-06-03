@@ -8,6 +8,11 @@ const Sidebar = () => {
   useEffect(() => {
     console.log("asPath", router);
   }, [asPath]);
+  const handleLogout = () => {
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminUser");
+    router.push("/admin/login");
+  };
   return (
     <div className="sidebar-wrapper">
       <aside className="sidebar">
@@ -24,7 +29,9 @@ const Sidebar = () => {
             </Link>
           ))}
         </nav>
-        <button className="sidebar-logout">Logout</button>
+        <button className="sidebar-logout" onClick={handleLogout}>
+          Logout
+        </button>
       </aside>
     </div>
   );

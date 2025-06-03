@@ -6,7 +6,7 @@ import DetailsTabNav from "./details-tab-nav";
 import RelatedProducts from "./related-products";
 
 const ProductDetailsArea = ({ productItem }) => {
-  const { _id, img, imageURLs, videoId,status } = productItem || {};
+  const { id, img, image_urls, videoId,status } = productItem || {};
   const [activeImg, setActiveImg] = useState(img);
   const dispatch = useDispatch();
   // active image change when img change
@@ -28,7 +28,7 @@ const ProductDetailsArea = ({ productItem }) => {
               <DetailsThumbWrapper
                 activeImg={activeImg}
                 handleImageActive={handleImageActive}
-                imageURLs={imageURLs}
+                image_urls={image_urls}
                 imgWidth={580}
                 imgHeight={670}
                 videoId={videoId}
@@ -72,7 +72,7 @@ const ProductDetailsArea = ({ productItem }) => {
             </div>
           </div>
           <div className="row">
-            <RelatedProducts id={_id} />
+            <RelatedProducts id={id} />
           </div>
         </div>
       </section>

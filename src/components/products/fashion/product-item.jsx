@@ -58,7 +58,21 @@ const ProductItem = ({ product, style_2 = false }) => {
     <div className={`tp-product-item-2 ${style_2 ? "" : "mb-40"}`}>
       <div className="tp-product-thumb-2 p-relative z-index-1 fix">
         <Link href={`/product-details/${id}`}>
-          <Image src={img} alt="product img" width={284} height={302} />
+          <div
+            style={{
+              minHeight: 302,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              background: "#f5f5f5",
+            }}
+          >
+            {img ? (
+              <Image src={img} alt="product img" width={284} height={302} />
+            ) : (
+              <span style={{ color: "#999" }}>No Image</span>
+            )}
+          </div>
         </Link>
         <div className="tp-product-badge">
           {status === "out-of-stock" && (
