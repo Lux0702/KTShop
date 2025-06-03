@@ -204,7 +204,7 @@ const useCheckoutSubmit = () => {
       country: data.country,
       zip_code: data.zipCode,
       shipping_option: data.shippingOption,
-      status: "Pending",
+      status: data.payment === "Card" ? "processing" : "pending",
       cart: cart_products,
       payment_method: data.payment,
       sub_total: total,
@@ -291,7 +291,7 @@ const useCheckoutSubmit = () => {
           else {
             localStorage.removeItem("couponInfo");
             notifySuccess("Your Order Confirmed!");
-            router.push(`/order/${result.data?.order?._id}`);
+            router.push(`/order/${result.data?.order?.id}`);
           }
         })
        } 

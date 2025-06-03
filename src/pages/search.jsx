@@ -10,6 +10,8 @@ import Wrapper from "@/layout/wrapper";
 import { useGetAllProductsQuery } from "@/redux/features/productApi";
 import NiceSelect from "@/ui/nice-select";
 import { useState } from "react";
+import Header from "@/layout/headers/header";
+
 // internal
 
 export default function SearchPage({ query }) {
@@ -153,7 +155,7 @@ export default function SearchPage({ query }) {
   return (
     <Wrapper>
       <SEO pageTitle="Wishlist" />
-      <HeaderTwo style_2={true} />
+      <Header />
       <CommonBreadcrumb title="Search Products" subtitle="Search Products" />
       {content}
       <Footer primary_style={true} />

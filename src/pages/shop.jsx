@@ -9,6 +9,7 @@ import ErrorMsg from "@/components/common/error-msg";
 import Footer from "@/layout/footers/footer";
 import ShopFilterOffCanvas from "@/components/common/shop-filter-offcanvas";
 import ShopLoader from "@/components/loader/shop/shop-loader";
+import Header from "@/layout/headers/header";
 
 const ShopPage = ({ query }) => {
   const { data: products, isError, isLoading } = useGetAllProductsQuery();
@@ -158,7 +159,7 @@ const ShopPage = ({ query }) => {
   return (
     <Wrapper>
       <SEO pageTitle="Shop" />
-      <HeaderTwo style_2={true} />
+      <Header />
       <ShopBreadcrumb title="" subtitle="Shop" />
       {content}
       <Footer primary_style={true} />

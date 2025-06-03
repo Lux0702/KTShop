@@ -5,12 +5,14 @@ import Footer from '@/layout/footers/footer';
 import Wrapper from '@/layout/wrapper';
 import CommonBreadcrumb from '@/components/breadcrumb/common-breadcrumb';
 import CouponArea from '@/components/coupon/coupon-area';
+import Header from "@/layout/headers/header";
+import Header from "@/layout/headers/header";
 
 const CouponPage = () => {
   return (
     <Wrapper>
       <SEO pageTitle="Coupon" />
-      <HeaderTwo style_2={true} />
+      <Header />
       <CommonBreadcrumb title="Grab Best Offer" subtitle="Coupon" />
       <CouponArea/>
       <Footer primary_style={true} />

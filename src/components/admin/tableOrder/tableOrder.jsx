@@ -1,14 +1,35 @@
-// components/admin/InvoiceTable.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import dayjs from "dayjs";
-import { Select, Tag, message } from "antd";
+import {
+  Select,
+  Tag,
+  message,
+  Drawer,
+  Descriptions,
+  Image,
+  Button,
+} from "antd";
 import axios from "axios";
+import ReactToPrint from "react-to-print";
 
-const InvoiceTable = ({ invoices = [], page = 1, totalPages = 1 }) => {
+const InvoiceTable = ({ invoices = [] }) => {
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState(null);
   const [filteredInvoices, setFilteredInvoices] = useState([]);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+ 
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 5;
 
+  const totalPages = Math.ceil(filteredInvoices.length / rowsPerPage);
+  const paginatedInvoices = filteredInvoices.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
+
+  const printRef = useRef();
   const optionSelect = [
     { value: "pending", label: "Pending" },
     { value: "delivered", label: "Delivered" },
@@ -23,27 +44,46 @@ const InvoiceTable = ({ invoices = [], page = 1, totalPages = 1 }) => {
     processing: <Tag color="blue">Processing</Tag>,
   };
 
-  useEffect(() => {
-    let data = [...invoices];
-    if (searchText) {
-      data = data.filter(inv => inv.name.toLowerCase().includes(searchText.toLowerCase()));
-    }
-    if (statusFilter) {
-      data = data.filter(inv => inv.status === statusFilter);
-    }
-    setFilteredInvoices(data);
-  }, [searchText, statusFilter, invoices]);
+useEffect(() => {
+  let data = [...invoices];
+  if (searchText) {
+    data = data.filter((inv) =>
+      inv.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+  }
+  if (statusFilter) {
+    data = data.filter((inv) => inv.status === statusFilter);
+  }
+  setFilteredInvoices(data);
+  setCurrentPage(1); // Cần dòng này
+}, [searchText, statusFilter, invoices]);
+
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await axios.patch(`https://ktshop.onrender.com/api/order/update-status/${id}`, { status: newStatus });
+      await axios.patch(
+        `https://ktshop.onrender.com/api/order/update-status/${id}`,
+        { status: newStatus }
+      );
       message.success("Status updated");
-      setFilteredInvoices(prev =>
-      prev.map(inv => inv.id === id ? { ...inv, status: newStatus } : inv)
-    );
+      setFilteredInvoices((prev) =>
+        prev.map((inv) => (inv.id === id ? { ...inv, status: newStatus } : inv))
+      );
     } catch (error) {
       console.error(error);
       message.error("Failed to update status");
+    }
+  };
+
+  const handleViewInvoice = async (id) => {
+    try {
+      const { data } = await axios.get(
+        `https://ktshop.onrender.com/api/order/${id}`
+      );
+      setSelectedInvoice(data);
+      setDrawerVisible(true);
+    } catch (err) {
+      message.error("Failed to load invoice details");
     }
   };
 
@@ -88,11 +128,13 @@ const InvoiceTable = ({ invoices = [], page = 1, totalPages = 1 }) => {
           </tr>
         </thead>
         <tbody>
-          {filteredInvoices.map((inv) => (
+          {paginatedInvoices.map((inv) => (
             <tr key={inv.id}>
               <td>#{inv.id}</td>
               <td className="customer">
-                {inv?.user?.avatar && <img src={inv.user.avatar} alt="avatar" />}
+                {inv?.user?.avatar && (
+                  <img src={inv.user.avatar} alt="avatar" />
+                )}
                 <span>{inv?.user?.name || "Unknow User"}</span>
               </td>
               <td>${Number(inv?.total_amount)?.toFixed(2)}</td>
@@ -110,8 +152,15 @@ const InvoiceTable = ({ invoices = [], page = 1, totalPages = 1 }) => {
                 />
               </td>
               <td className="icons">
-                <button><i className="fa fa-print"></i></button>
-                <button><i className="fa fa-eye"></i></button>
+                <ReactToPrint
+                  trigger={() => (
+                    <Button icon={<i className="fa fa-print" />}></Button>
+                  )}
+                  content={() => printRef.current}
+                />
+                <button onClick={() => handleViewInvoice(inv.id)}>
+                  <i className="fa fa-eye"></i>
+                </button>
               </td>
             </tr>
           ))}
@@ -119,14 +168,86 @@ const InvoiceTable = ({ invoices = [], page = 1, totalPages = 1 }) => {
       </table>
 
       <div className="pagination">
-        <button disabled={page === 1}>{"<"}</button>
-        {[...Array(totalPages).keys()].slice(page - 1, page + 4).map((i) => (
-          <button key={i + 1} className={page === i + 1 ? "active" : ""}>
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+        >
+          {"<"}
+        </button>
+        {[...Array(totalPages).keys()].map((i) => (
+          <button
+            key={i + 1}
+            className={currentPage === i + 1 ? "active" : ""}
+            onClick={() => setCurrentPage(i + 1)}
+          >
             {i + 1}
           </button>
         ))}
-        <button disabled={page === totalPages}>{">"}</button>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+        >
+          {">"}
+        </button>
       </div>
+
+      <Drawer
+        title={`Invoice Detail #${selectedInvoice?.id}`}
+        placement="right"
+        width={500}
+        onClose={() => setDrawerVisible(false)}
+        open={drawerVisible}
+        extra={
+          <ReactToPrint
+            trigger={() => (
+              <Button icon={<i className="fa fa-print" />} type="primary">
+                In Hóa Đơn
+              </Button>
+            )}
+            content={() => printRef.current}
+          />
+        }
+      >
+        <div ref={printRef}>
+          {selectedInvoice && (
+            <Descriptions column={1} bordered>
+              <Descriptions.Item label="Customer">
+                {selectedInvoice.name}
+              </Descriptions.Item>
+              <Descriptions.Item label="Email">
+                {selectedInvoice.email}
+              </Descriptions.Item>
+              <Descriptions.Item label="Contact">
+                {selectedInvoice.contact}
+              </Descriptions.Item>
+              <Descriptions.Item label="Address">
+                {selectedInvoice.address}, {selectedInvoice.city},{" "}
+                {selectedInvoice.country}
+              </Descriptions.Item>
+              <Descriptions.Item label="Payment Method">
+                {selectedInvoice.payment_method}
+              </Descriptions.Item>
+              <Descriptions.Item label="Total">
+                ${Number(selectedInvoice.total_amount).toFixed(2)}
+              </Descriptions.Item>
+              <Descriptions.Item label="Status">
+                {selectedInvoice.status}
+              </Descriptions.Item>
+              <Descriptions.Item label="Created At">
+                {dayjs(selectedInvoice.createdAt).format("YYYY-MM-DD HH:mm")}
+              </Descriptions.Item>
+              <Descriptions.Item label="Products">
+                {selectedInvoice.cart?.map((p, index) => (
+                  <div key={index} style={{ marginBottom: 10 }}>
+                    <Image src={p.img} alt={p.title} width={50} />{" "}
+                    <strong>{p.title}</strong> x {p.orderQuantity}
+                  </div>
+                ))}
+              </Descriptions.Item>
+            </Descriptions>
+          )}
+        </div>
+      </Drawer>
     </div>
   );
 };

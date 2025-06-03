@@ -5,12 +5,13 @@ import HeaderTwo from '@/layout/headers/header-2';
 import CommonBreadcrumb from '@/components/breadcrumb/common-breadcrumb';
 import ForgotArea from '@/components/login-register/forgot-area';
 import Footer from '@/layout/footers/footer';
+import Header from "@/layout/headers/header";
 
 const ForgotPage = () => {
   return (
     <Wrapper>
       <SEO pageTitle="Login" />
-      <HeaderTwo style_2={true} />
+      <Header />
       <CommonBreadcrumb title="Forgot Password" subtitle="Reset Password" center={true} />
       <ForgotArea />
       <Footer primary_style={true} />

@@ -17,7 +17,10 @@ export const dashboardApi = apiSlice.injectEndpoints({
       query: () =>
         `${BASE_URL}/api/user-order/most-selling-category`,
     }),
+    getOrderById : builder.query({
+      query: (id) => `${BASE_URL}/api/order/${id}`,
+    }),
   }),
 });
 
-export const { useGetDashBoardAmountQuery, useGetListOrderQuery, useGetSaleReportQuery, useGetMostSaleCategoryQuery } = dashboardApi;
+export const { useGetDashBoardAmountQuery, useGetListOrderQuery, useGetSaleReportQuery, useGetMostSaleCategoryQuery , useGetOrderByIdQuery} = dashboardApi;

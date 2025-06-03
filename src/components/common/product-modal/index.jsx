@@ -23,7 +23,7 @@ const ProductModal = () => {
   const { productItem, isModalOpen } = useSelector(
     (state) => state.productModal
   );
-  const { img, imageURLs,status } = productItem || {};
+  const { img, image_urls,status } = productItem || {};
   const [activeImg, setActiveImg] = useState(img);
   const [loading,setLoading] = useState(false);
   const dispatch = useDispatch();
@@ -61,7 +61,7 @@ const ProductModal = () => {
             <DetailsThumbWrapper
               activeImg={activeImg}
               handleImageActive={handleImageActive}
-              imageURLs={imageURLs}
+              imageURLs={image_urls}
               imgWidth={416}
               imgHeight={480}
               loading={loading}

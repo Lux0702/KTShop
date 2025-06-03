@@ -10,6 +10,7 @@ import Footer from "@/layout/footers/footer";
 import ProfileArea from "@/components/my-account/profile-area";
 import { useGetOrdersOfUserQuery } from "@/redux/features/order/orderApi";
 import Loader from "@/components/loader/loader";
+import Header from "@/layout/headers/header";
 
 const ProfilePage = () => {
   const router = useRouter();
@@ -57,7 +58,7 @@ useEffect(() => {
   return (
     <Wrapper>
       <SEO pageTitle="Profile" />
-      <HeaderTwo style_2={true} />
+      <Header />
       <ProfileArea orderData={orderData} />
       <Footer style_2={true} />
     </Wrapper>
