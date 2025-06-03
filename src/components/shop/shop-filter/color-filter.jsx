@@ -38,6 +38,7 @@ const ColorFilter = ({setCurrPage,shop_right=false}) => {
   }
   if (!isLoading && !isError && products?.data?.length > 0) {
     const product_items = products.data;
+    console.log("product_items", product_items);
     let allColor = [];
     product_items.forEach((product) => {
       let uniqueColor = new Set(product.image_urls.map((item) => item?.color));
@@ -77,7 +78,7 @@ const ColorFilter = ({setCurrPage,shop_right=false}) => {
             <span className="tp-shop-widget-checkbox-circle-number">
               {
                 product_items
-                  .map((p) => p.imageURLs)
+                  .map((p) => p.image_urls)
                   .flat()
                   .filter((i) => i?.color?.name === item?.name).length
               }

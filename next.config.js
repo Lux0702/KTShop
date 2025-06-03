@@ -9,8 +9,9 @@ const nextConfig = {
       "picsum.photos",
       "via.placeholder.com",
       "placehold.co",
+      "logo.com",
     ],
   },
 };
 
-module.exports = nextConfig
+module.exports = nextConfig;

@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import CouponLoader from "../loader/coupon-loader";
 import ErrorMsg from "../common/error-msg";
 import OfferCouponItem from "./OfferCouponItem";
-import { useGetOfferCouponsQuery } from "@/redux/features/coupon/couponApi";
-
+import { useGetCouponsQuery } from "@/redux/features/coupon/couponApi";
 
 const OfferCouponArea = () => {
   const [copiedCode, setCopiedCode] = useState("");
@@ -17,7 +16,7 @@ const OfferCouponArea = () => {
     }, 3000);
   };
 
-  const { data: offerCoupons, isError, isLoading } = useGetOfferCouponsQuery();
+  const { data: offerCoupons, isError, isLoading } = useGetCouponsQuery();
   // decide what to render
   let content = null;
 

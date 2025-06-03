@@ -19,12 +19,12 @@ const CouponItem = ({ coupon, handleCopied, copiedCode, copied }) => {
         <div className="tp-coupon-content">
           <h3 className="tp-coupon-title">{coupon.title}</h3>
           <p className="tp-coupon-offer mb-15">
-            <span>{coupon.discountPercentage}%</span>Off
+            <span>{coupon.discount_percentage}%</span>Off
           </p>
           <div
             className="tp-coupon-countdown"
           >
-            {dayjs().isAfter(dayjs(coupon.endTime)) ? (
+            {dayjs().isAfter(dayjs(coupon.end_time)) ? (
               <div className="tp-coupon-countdown-inner">
                 <ul>
                   <li>
@@ -42,7 +42,7 @@ const CouponItem = ({ coupon, handleCopied, copiedCode, copied }) => {
                 </ul>
               </div>
             ) : (
-              <OfferTimer expiryTimestamp={new Date(coupon.endTime)} />
+              <OfferTimer expiryTimestamp={new Date(coupon.end_time)} />
             )}
           </div>
         </div>
@@ -53,10 +53,10 @@ const CouponItem = ({ coupon, handleCopied, copiedCode, copied }) => {
             Coupon{" "}
             <span
               className={
-                dayjs().isAfter(dayjs(coupon.endTime)) ? "in-active" : "active"
+                dayjs().isAfter(dayjs(coupon.end_time)) ? "in-active" : "active"
               }
             >
-              {dayjs().isAfter(dayjs(coupon.endTime)) ? "Inactive" : "Active"}
+              {dayjs().isAfter(dayjs(coupon.end_time)) ? "Inactive" : "Active"}
             </span>
           </h4>
           <div className="tp-coupon-info-details">
@@ -67,21 +67,21 @@ const CouponItem = ({ coupon, handleCopied, copiedCode, copied }) => {
               <p>
                 *This coupon code will apply on{" "}
                 <span>Grocery type products</span> and when you shopping more
-                than <span>${coupon.minimumAmount}</span>
+                than <span>${coupon.minimum_amount}</span>
               </p>
             </div>
           </div>
         </div>
         <div className="tp-coupon-date">
           <CopyToClipboard
-            text={coupon.couponCode}
-            onCopy={() => handleCopied(coupon.couponCode)}
+            text={coupon.coupon_code}
+            onCopy={() => handleCopied(coupon.coupon_code)}
           >
             <button>
-              {copied && coupon.couponCode === copiedCode ? (
+              {copied && coupon.coupon_code === copiedCode ? (
                 <span>Copied!</span>
               ) : (
-                <span>{coupon.couponCode}</span>
+                <span>{coupon.coupon_code}</span>
               )}
             </button>
           </CopyToClipboard>

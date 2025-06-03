@@ -15,7 +15,7 @@ const { Option } = Select;
 
 const DrawerArea = ({ open, onClose,onAddSuccess, initialValues }) => {
 
-
+ 
 const [childCategories, setChildCategories] = useState([]);
 
   const [form] = Form.useForm();
@@ -110,7 +110,7 @@ const onFinish = async (values) => {
 
       const res = await updateProduct({ id: initialValues.id, data }).unwrap();
       message.success("Cập nhật sản phẩm thành công");
-      onClose({ id: initialValues.id, ...initialValues, ...data }); // Cập nhật bảng ngoài nếu cần
+      onClose({ id: initialValues.id, ...initialValues, ...data });
     } else {
       const payload = {
         ...values,

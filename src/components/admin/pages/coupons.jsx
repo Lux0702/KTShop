@@ -57,7 +57,7 @@ export default function CouponManager() {
   delete payload.dateRange;
 
   // ⚠️ Kiểm tra thiếu thời gian kết thúc
-  if ( !payload.end_time) {
+  if (!payload.start_time || !payload.end_time) {
     message.error("Vui lòng chọn đầy đủ thời gian bắt đầu và kết thúc");
     return;
   }
