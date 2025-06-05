@@ -1,4 +1,5 @@
 import { apiSlice } from "@/redux/api/apiSlice";
+import { update } from "lodash";
 export const categoryApi = apiSlice.injectEndpoints({
     overrideExisting: true,
     endpoints: (builder) => ({
@@ -18,6 +19,13 @@ export const categoryApi = apiSlice.injectEndpoints({
         getAllCategories: builder.query({
             query: () => `https://ktshop.onrender.com/api/category/all`,
         }),
+        updateCategory: builder.mutation({
+            query: ({ id, data }) => ({
+                url: `https://ktshop.onrender.com/api/category/edit/${id}`,
+                method: "PATCH",
+                body: data,
+            }),
+        }),
     }),
 })
 export const {
@@ -25,4 +33,5 @@ export const {
     useGetProductTypeCategoryQuery,
     useGetShowCategoryQuery,
     useGetAllCategoriesQuery,
+    useUpdateCategoryMutation,
 } = categoryApi;

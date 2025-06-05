@@ -22,31 +22,45 @@ const AdminSlugPage = () => {
 
   const [isAuthorized, setIsAuthorized] = useState(false);
 
-useEffect(() => {
-  // Nếu là trang login thì không cần kiểm tra quyền
-  if (slug === "login") {
-    setIsAuthorized(true);
-    return;
-  }
-
-  const userData = localStorage.getItem("adminUser");
-  if (!userData) {
-    push("/admin/login");
-    return;
-  }
-
-  try {
-    const parsed = JSON.parse(userData);
-    if (allowedRoles.includes(parsed.role)) {
+  useEffect(() => {
+    if (slug === "login") {
       setIsAuthorized(true);
-    } else {
-      push("/admin/login");
+      return;
     }
-  } catch (error) {
-    console.error("Failed to parse user data", error);
-    push("/admin/login");
-  }
-}, [slug]);
+
+    const checkAuth = () => {
+      const userData = localStorage.getItem("adminUser");
+      if (!userData) {
+        push("/admin/login");
+        return;
+      }
+
+      try {
+        const parsed = JSON.parse(userData);
+        if (allowedRoles.includes(parsed.role)) {
+          setIsAuthorized(true);
+        } else {
+          push("/admin/login");
+        }
+      } catch (error) {
+        console.error("Failed to parse user data", error);
+        push("/admin/login");
+      }
+    };
+
+    checkAuth();
+
+    // Optional: Lắng nghe thay đổi localStorage từ các tab khác
+    const handleStorageChange = (e) => {
+      if (e.key === "adminUser") {
+        checkAuth(); // kiểm tra lại nếu user bị đổi
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [slug]);
+  
 
 
   const renderPage = () => {

@@ -9,6 +9,8 @@ import {
   message,
   Image,
   Modal,
+  Select,
+  Tag,
 } from "antd";
 import {
   EditOutlined,
@@ -22,13 +24,14 @@ import {
   useUpdateBrandMutation,
 } from "@/redux/features/admin/brandApi";
 import { useUploadImageMutation } from "@/redux/features/admin/cloudinaryApi";
+import Loader from "@/components/loader/loader";
 
 export default function Brand() {
   const [form] = Form.useForm();
-  const { data, refetch } = useGetAllBrandsQuery();
-  const [addBrand] = useAddBrandMutation();
-  const [updateBrand] = useUpdateBrandMutation();
-  const [deleteBrand] = useDeleteBrandMutation();
+  const { data,isLoading, refetch } = useGetAllBrandsQuery();
+  const [addBrand, {isLoading: isAdding}] = useAddBrandMutation();
+  const [updateBrand, {isLoading: isUpdating}] = useUpdateBrandMutation();
+  const [deleteBrand, {isLoading: isDeleting}] = useDeleteBrandMutation();
   const [uploadImage] = useUploadImageMutation();
 
   const [logoUrl, setLogoUrl] = useState("");
@@ -38,7 +41,7 @@ export default function Brand() {
   const [localBrands, setLocalBrands] = useState([]);
 
   const brands = localBrands.length > 0 ? localBrands : data?.result || [];
-
+  console.log("brands", brands);
   const handleUpload = async ({ file, onSuccess, onError }) => {
     const reader = new FileReader();
     reader.onload = (e) => setPreview(e.target.result);
@@ -142,11 +145,25 @@ export default function Brand() {
     { title: "WEBSITE", dataIndex: "website" },
     { title: "LOCATION", dataIndex: "location" },
     {
+      title: "STATUS",
+      dataIndex: "status",
+      render: (status) => (
+        <Tag color={status === "active" ? "green" : "red"}>{status}</Tag>
+      ),
+    },
+    {
       title: "ACTION",
       render: (_, record) => (
         <Space>
-          <Button icon={<EditOutlined />} onClick={() => showEditModal(record)} />
-          <Button icon={<DeleteOutlined />} danger onClick={() => handleDelete(record.id)} />
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => showEditModal(record)}
+          />
+          <Button
+            icon={<DeleteOutlined />}
+            danger
+            onClick={() => handleDelete(record.id)}
+          />
         </Space>
       ),
     },
@@ -154,7 +171,30 @@ export default function Brand() {
 
   return (
     <div style={{ padding: 24 }}>
-      <Button type="primary" onClick={() => setIsModalVisible(true)} style={{ marginBottom: 16 }}>
+      {(isAdding || isUpdating || isLoading || isDeleting) && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(255,255,255,0.6)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <Loader loading spinner="fade" />
+        </div>
+      )}
+
+      <Button
+        type="primary"
+        onClick={() => setIsModalVisible(true)}
+        style={{ marginBottom: 16 }}
+      >
         Thêm Brand
       </Button>
       <Table
@@ -178,9 +218,21 @@ export default function Brand() {
         >
           <Button icon={<UploadOutlined />}>Upload Logo</Button>
         </Upload>
-        {preview && <Image src={preview} width={80} style={{ marginTop: 8 }} />}
+        {preview && (
+          <Image
+            src={preview}
+            width={80}
+            style={{ marginTop: 8 }}
+            alt="Image Brand"
+          />
+        )}
 
-        <Form layout="vertical" onFinish={onFinish} form={form} style={{ marginTop: 16 }}>
+        <Form
+          layout="vertical"
+          onFinish={onFinish}
+          form={form}
+          style={{ marginTop: 16 }}
+        >
           <Form.Item name="name" label="Name" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
@@ -193,6 +245,20 @@ export default function Brand() {
           <Form.Item name="location" label="Location">
             <Input />
           </Form.Item>
+          {editing && (
+            <Form.Item
+              name="status"
+              label="Trạng thái hiển thị"
+              rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
+            >
+              <Select
+                options={[
+                  { label: "Hiển thị", value: "active" },
+                  { label: "Ẩn", value: "inactive" },
+                ]}
+              />
+            </Form.Item>
+          )}
           <Form.Item>
             <Button type="primary" htmlType="submit" block>
               {editing ? "Cập nhật" : "Thêm"}

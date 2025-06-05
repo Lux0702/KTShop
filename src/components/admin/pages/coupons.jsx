@@ -13,13 +13,13 @@ import {
   useUpdateCouponMutation,
   useDeleteCouponMutation,
 } from "@/redux/features/coupon/couponApi";
-
+import Loader from "@/components/loader/loader";
 export default function CouponManager() {
   const { data, isLoading } = useGetCouponsQuery();
   const coupons = data || [];
-  const [addCoupon] = useAddCouponMutation();
-  const [updateCoupon] = useUpdateCouponMutation();
-  const [deleteCoupon] = useDeleteCouponMutation();
+  const [addCoupon, {isLoading: isAdding}] = useAddCouponMutation();
+  const [updateCoupon, {isLoading: isUpdating}] = useUpdateCouponMutation();
+  const [deleteCoupon, {isLoading: isDeleting}] = useDeleteCouponMutation();
 
   const [form] = Form.useForm();
   const [visible, setVisible] = useState(false);
@@ -161,13 +161,35 @@ export default function CouponManager() {
 
   return (
     <div style={{ padding: 24 }}>
+      {(isAdding || isUpdating || isLoading || isDeleting) && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(255,255,255,0.6)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <Loader loading spinner="fade" />
+        </div>
+      )}
       <Space style={{ marginBottom: 16 }}>
         <Input.Search
           placeholder="Search by coupon name"
           style={{ width: 300 }}
           onChange={(e) => setSearchText(e.target.value)}
         />
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => showModal()}>
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => showModal()}
+        >
           Add Coupon
         </Button>
       </Space>
@@ -178,29 +200,46 @@ export default function CouponManager() {
         pagination={{ pageSize: 5 }}
       />
 
-      <Modal open={visible} title={editing ? "Edit Coupon" : "Add Coupon"} onCancel={() => setVisible(false)} footer={null}>
+      <Modal
+        open={visible}
+        title={editing ? "Edit Coupon" : "Add Coupon"}
+        onCancel={() => setVisible(false)}
+        footer={null}
+      >
         <Upload
           customRequest={handleUpload}
           showUploadList={true}
           accept=".jpg,.png,.jpeg,.webp"
-          
         >
           <Button icon={<UploadOutlined />}>Upload Logo</Button>
         </Upload>
         {logoUrl && <Image src={logoUrl} width={80} style={{ marginTop: 8 }} />}
 
-        <Form layout="vertical" onFinish={handleSubmit} form={form} style={{ marginTop: 16 }}>
+        <Form
+          layout="vertical"
+          onFinish={handleSubmit}
+          form={form}
+          style={{ marginTop: 16 }}
+        >
           <Form.Item name="title" label="Name" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="coupon_code" label="Code" rules={[{ required: true }]}>
+          <Form.Item
+            name="coupon_code"
+            label="Code"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="discount_percentage" label="Discount %" rules={[{ required: true }]}>
-            <InputNumber style={{ width: '100%' }} min={1} max={100} />
+          <Form.Item
+            name="discount_percentage"
+            label="Discount %"
+            rules={[{ required: true }]}
+          >
+            <InputNumber style={{ width: "100%" }} min={1} max={100} />
           </Form.Item>
           <Form.Item name="minimum_amount" label="Minimum Order">
-            <InputNumber style={{ width: '100%' }} min={0} />
+            <InputNumber style={{ width: "100%" }} min={0} />
           </Form.Item>
           <Form.Item name="product_type" label="Product Type">
             <Input />
@@ -212,7 +251,7 @@ export default function CouponManager() {
             </Select>
           </Form.Item>
           <Form.Item name="dateRange" label="Start - End">
-            <DatePicker.RangePicker style={{ width: '100%' }} />
+            <DatePicker.RangePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item>
             <Button htmlType="submit" type="primary" block>

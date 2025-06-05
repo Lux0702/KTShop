@@ -2,15 +2,17 @@ import Link from "next/link";
 import { menuItems  } from "./MenuItem";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { clearUser } from "@/redux/features/admin/userSlice";
+import { useDispatch } from "react-redux";
 const Sidebar = () => {
   const router = useRouter();
   const { asPath } = router;
+  const dispatch = useDispatch();
   useEffect(() => {
     console.log("asPath", router);
   }, [asPath]);
   const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    localStorage.removeItem("adminUser");
+    dispatch(clearUser());
     router.push("/admin/login");
   };
   return (

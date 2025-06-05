@@ -65,6 +65,8 @@ const ProductItem = ({ product, style_2 = false }) => {
               alignItems: "center",
               justifyContent: "center",
               background: "#f5f5f5",
+              maxWidth: 284,
+              maxHeight: 302,
             }}
           >
             {img ? (

@@ -3,20 +3,22 @@ import { Form, Input, Button, Typography, message } from "antd";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useRouter } from "next/router";
-
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "@/redux/features/admin/userSlice"; 
 const { Title } = Typography;
 
 export default function AdminLogin({ onLoginSuccess }) {
   const [loading, setLoading] = useState(false);
 const router = useRouter();
-
+ const dispatch = useDispatch();
   const handleLogin = async (values) => {
     setLoading(true);
     try {
       const res = await axios.post("https://ktshop.onrender.com/api/admin/login", values); // API tuỳ backend
       if (res.data?.token) {
         localStorage.setItem("adminToken", res.data.token);
-        localStorage.setItem("adminUser", JSON.stringify(res.data)); // 💥 thêm dòng này
+        // localStorage.setItem("adminUser", JSON.stringify(res.data)); // 💥 thêm dòng này
+        dispatch(setUser(res.data)); 
         message.success("Login successful!");
         router.push("/admin/dashboard");
         }
