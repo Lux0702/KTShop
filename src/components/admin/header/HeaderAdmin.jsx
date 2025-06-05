@@ -65,7 +65,7 @@ const HeaderAdmin = () => {
               alt="Avatar"
               width={40}
               height={40}
-              style={{ borderRadius: "50%" }}
+              style={{ borderRadius: "50%" ,maxHeight: "40px", maxWidth: "40px"}}
             />
           </button>
 
