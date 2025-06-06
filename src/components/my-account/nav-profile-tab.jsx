@@ -6,6 +6,7 @@ import { Box, DeliveryTwo, Processing, Truck } from "@/svg";
 import { userLoggedOut } from "@/redux/features/auth/authSlice";
 
 const NavProfileTab = ({ orderData }) => {
+  console.log("orderData nav:", orderData)
   const {user} = useSelector(state => state.auth)
   const dispatch = useDispatch();
   const router = useRouter();
@@ -18,16 +19,30 @@ const NavProfileTab = ({ orderData }) => {
     <div className="profile__main">
       <div className="profile__main-top pb-80">
         <div className="row align-items-center">
-          <div className="col-md-6">
+          <div className="col-md-8">
             <div className="profile__main-inner d-flex flex-wrap align-items-center">
               <div className="profile__main-content">
-                <h4 className="profile__main-title">Welcome Mr. {user?.name}</h4>
+                <div className="profile__main-content">
+                  <div className="welcome-wrapper">
+                    <img
+                      src={user?.image || "https://placehold.co/60"}
+                      alt="Avatar"
+                      className="welcome-avatar"
+                    />
+                    <h4 className="profile__main-title">
+                      Welcome Mr. {user?.name}
+                    </h4>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div className="col-md-6">
+          <div className="col-md-4">
             <div className="profile__main-logout text-sm-end">
-              <a onClick={handleLogout} className="cursor-pointer tp-logout-btn">
+              <a
+                onClick={handleLogout}
+                className="cursor-pointer tp-logout-btn"
+              >
                 Logout
               </a>
             </div>
@@ -40,7 +55,9 @@ const NavProfileTab = ({ orderData }) => {
             <div className="profile__main-info-item">
               <div className="profile__main-info-icon">
                 <span>
-                  <span className="profile-icon-count profile-download">{orderData?.totalDoc}</span>
+                  <span className="profile-icon-count profile-download">
+                    {orderData?.totalDoc}
+                  </span>
                   <Box />
                 </span>
               </div>
@@ -51,7 +68,9 @@ const NavProfileTab = ({ orderData }) => {
             <div className="profile__main-info-item">
               <div className="profile__main-info-icon">
                 <span>
-                  <span className="profile-icon-count profile-order">{orderData?.pending}</span>
+                  <span className="profile-icon-count profile-order">
+                    {orderData?.pending}
+                  </span>
                   <Processing />
                 </span>
               </div>

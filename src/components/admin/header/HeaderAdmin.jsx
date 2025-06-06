@@ -1,21 +1,21 @@
-import React, { useState, useEffect, useRef, use } from "react";
-import { Icons } from "@/components/icons/icons";
+import React, { useState, useRef, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
+import { Icons } from "@/components/icons/icons";
+import Image from "next/image";
+import { clearUser } from "@/redux/features/admin/userSlice";
 
 const HeaderAdmin = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [user, setUser] = useState(null);
   const dropdownRef = useRef(null);
   const avatarButtonRef = useRef(null);
   const router = useRouter();
   const { slug } = router.query;
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("adminUser");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+  const user = useSelector((state) => state.adminUser.user);
+  const dispatch = useDispatch();
 
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (
         dropdownRef.current &&
@@ -26,14 +26,16 @@ const HeaderAdmin = () => {
         setDropdownOpen(false);
       }
     };
+    console.log("HeaderAdmin mounted", user); 
 
     document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("adminToken");
-    localStorage.removeItem("adminUser");
+    dispatch(clearUser());
     router.push("/admin/login");
   };
 
@@ -58,16 +60,36 @@ const HeaderAdmin = () => {
             onClick={() => setDropdownOpen(!dropdownOpen)}
             ref={avatarButtonRef}
           >
-            <img src={user?.image || "/avatar.jpg"} alt="Avatar" />
+            <Image
+              src={user?.image || "https://placehold.co/40x40"}
+              alt="Avatar"
+              width={40}
+              height={40}
+              style={{ borderRadius: "50%" ,maxHeight: "40px", maxWidth: "40px"}}
+            />
           </button>
 
           {dropdownOpen && (
             <div className="dropdown" ref={dropdownRef}>
               <ul>
-                <li><strong>{user?.name || "Admin"}</strong></li>
-                <li><button onClick={() => navigateTo("/admin/dashboard")}>Dashboard</button></li>
-                <li><button onClick={() => navigateTo("/admin/profile")}>Account Settings</button></li>
-                <li><button onClick={handleLogout} className="logout">Logout</button></li>
+                <li>
+                  <strong>{user?.name || "Admin"}</strong>
+                </li>
+                <li>
+                  <button onClick={() => navigateTo("/admin/dashboard")}>
+                    Dashboard
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => navigateTo("/admin/profile")}>
+                    Account Settings
+                  </button>
+                </li>
+                <li>
+                  <button onClick={handleLogout} className="logout">
+                    Logout
+                  </button>
+                </li>
               </ul>
             </div>
           )}
@@ -76,6 +98,5 @@ const HeaderAdmin = () => {
     </header>
   );
 };
-
 
 export default HeaderAdmin;

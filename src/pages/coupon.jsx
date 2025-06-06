@@ -6,7 +6,6 @@ import Wrapper from '@/layout/wrapper';
 import CommonBreadcrumb from '@/components/breadcrumb/common-breadcrumb';
 import CouponArea from '@/components/coupon/coupon-area';
 import Header from "@/layout/headers/header";
-import Header from "@/layout/headers/header";
 
 const CouponPage = () => {
   return (

@@ -73,7 +73,7 @@ const PopularProducts = () => {
   if (!isLoading && !isError && products?.data?.length > 0) {
     const product_items = products.data;
 
-    content = (
+    content = ( 
       <Swiper
         {...slider_setting}
         modules={[Scrollbar]}
@@ -84,7 +84,7 @@ const PopularProducts = () => {
             key={item.id}
             className="tp-category-item-2 p-relative z-index-1 text-center"
           >
-            <div className="tp-category-thumb-2">
+            <div className="tp-category-thumb-2" style={{ minHeight: 260 }}>
               <Link href={`/product-details/${item.id}`}>
                 <Image src={item.img} alt="product-img" width={224} height={260} />
               </Link>

@@ -15,7 +15,7 @@ if (typeof window !== "undefined") {
 
 // stripePromise
 const NEXT_PUBLIC_STRIPE_KEY =
-  "pk_test_51RMQrZBVu23DKrbsfETf7sz8T6iZNbI3k479sDjjSABru4eRDaQ9aTLcgYP9HwFDxat2OBYVanIFiGz1KG79pDaw00IkJM7MEN";
+  "pk_test_51RVswmRqyAYHoT57mvKzDrfpqpZmQJS71BdvlZy05gNOq8zhPcShT2PFn69qgtLSUfBeHbvl2qtOD5D13d2NSIQJ00B6QkqReg";
 const stripePromise = loadStripe(NEXT_PUBLIC_STRIPE_KEY);
 const NEXT_PUBLIC_GOOGLE_CLIENT_ID = '771838566733-u3fb7ijj2di80ji0866pntfls127sij6.apps.googleusercontent.com'
 export default function App({ Component, pageProps }) {

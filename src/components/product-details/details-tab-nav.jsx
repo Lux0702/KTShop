@@ -104,16 +104,17 @@ const DetailsTabNav = ({ product }) => {
                 <div className="col-xl-10">
                   <table>
                     <tbody>
-                      {additional_information?.map((item, i) => {
-                        const key = Object.keys(item)[0];
-                        const value = item[key];
-                        return (
-                          <tr key={i}>
-                            <td>{key}</td>
-                            <td>{value}</td>
-                          </tr>
-                        );
-                      })}
+                      {Array.isArray(additional_information) &&
+                        additional_information?.map((item, i) => {
+                          const key = Object.keys(item)[0];
+                          const value = item[key];
+                          return (
+                            <tr key={i}>
+                              <td>{key}</td>
+                              <td>{value}</td>
+                            </tr>
+                          );
+                        })}
                     </tbody>
                   </table>
                 </div>

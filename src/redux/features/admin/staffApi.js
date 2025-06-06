@@ -34,6 +34,14 @@ export const staffApi = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Staff"],
     }),
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: `https://ktshop.onrender.com/api/admin/change-password`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["Staff"],
+    }),
   }),
 });
 
@@ -42,4 +50,5 @@ export const {
   useAddStaffMutation,
   useUpdateStaffMutation,
   useDeleteStaffMutation,
+  useChangePasswordMutation,
 } = staffApi;
