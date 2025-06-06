@@ -17,7 +17,7 @@ if (typeof window !== "undefined") {
 const NEXT_PUBLIC_STRIPE_KEY =
   "pk_test_51RMQrZBVu23DKrbsfETf7sz8T6iZNbI3k479sDjjSABru4eRDaQ9aTLcgYP9HwFDxat2OBYVanIFiGz1KG79pDaw00IkJM7MEN";
 const stripePromise = loadStripe(NEXT_PUBLIC_STRIPE_KEY);
-const NEXT_PUBLIC_GOOGLE_CLIENT_ID = '903081644488-n60j77h2s46n2anpau0p5krrjrpi8aae.apps.googleusercontent.com'
+const NEXT_PUBLIC_GOOGLE_CLIENT_ID = '771838566733-u3fb7ijj2di80ji0866pntfls127sij6.apps.googleusercontent.com'
 export default function App({ Component, pageProps }) {
   return (
     <GoogleOAuthProvider clientId={NEXT_PUBLIC_GOOGLE_CLIENT_ID}>
