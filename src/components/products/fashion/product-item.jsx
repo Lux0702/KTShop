@@ -12,7 +12,8 @@ import { add_to_compare } from "@/redux/features/compareSlice";
 import { notifyError, notifySuccess } from "@/utils/toast";
 
 const ProductItem = ({ product, style_2 = false }) => {
-  const { id, img, category, title, reviews, price, discount, tags, status } = product || {};
+  const { id, img, category, title, reviews, price, discount, tags, status } =
+    product || {};
   const [ratingVal, setRatingVal] = useState(0);
   const { cart_products } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -52,7 +53,6 @@ const ProductItem = ({ product, style_2 = false }) => {
   const handleCompareProduct = (prd) => {
     dispatch(add_to_compare(prd));
   };
-
 
   return (
     <div className={`tp-product-item-2 ${style_2 ? "" : "mb-40"}`}>

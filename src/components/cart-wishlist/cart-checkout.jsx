@@ -27,7 +27,7 @@ const CartCheckout = () => {
           <div className="tp-cart-checkout-shipping-option">
             <input id="flat_rate" type="radio" name="shipping" />
             <label htmlFor="flat_rate" onClick={() => handleShippingCost(20)}>
-              Flat rate: <span>$20.00</span>
+              Delivery: Today Cost:<span>$60.00</span>
             </label>
           </div>
           <div className="tp-cart-checkout-shipping-option">
@@ -36,7 +36,7 @@ const CartCheckout = () => {
               htmlFor="local_pickup"
               onClick={() => handleShippingCost(25)}
             >
-              Local pickup: <span> $25.00</span>
+              Delivery: 7 Days Cost:<span> $20.00</span>
             </label>
           </div>
           <div

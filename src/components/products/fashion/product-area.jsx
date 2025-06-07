@@ -6,7 +6,7 @@ import ProductItem from './product-item';
 import { HomeTwoPrdLoader } from '@/components/loader';
 
 // tabs
-const tabs = ["All Collection", "Shoes", "Clothing", "Bags"];
+const tabs = ["All Collection", "T-Shirts", "Jeans", "Dresses"];
 
 const ProductArea = () => {
   const [activeTab, setActiveTab] = useState(tabs[0]);
@@ -16,7 +16,7 @@ const ProductArea = () => {
   const handleActiveTab = (tab) => {
     setActiveTab(tab);
   };
-
+  console.log("products area tab", products);
   // decide what to render
   let content = null;
 
@@ -36,12 +36,18 @@ const ProductArea = () => {
     if (activeTab === 'All Collection') {
       product_items = products.data
     }
-    else if (activeTab === 'Shoes') {
-      product_items = products.data.filter(p => p.category.name === 'Shoes')
-    } else if (activeTab === 'Clothing') {
-      product_items = products.data.filter(p => p.category.name === 'Clothing')
-    } else if (activeTab === 'Bags') {
-      product_items = products.data.filter(p => p.category.name === 'Bags')
+    else if (activeTab === "T-Shirts") {
+      product_items = products.data.filter(
+        (p) => (p.category?.parent || p.category_name) === "T-Shirts"
+      );
+    } else if (activeTab === "Jeans") {
+      product_items = products.data.filter(
+        (p) => (p.category?.parent || p.category_name) === "Jeans"
+      );
+    } else if (activeTab === "Dresses") {
+      product_items = products.data.filter(
+        (p) => (p.category?.parent || p.category_name) === "Dresses"
+      );
     } else {
       product_items = products.data;
     }

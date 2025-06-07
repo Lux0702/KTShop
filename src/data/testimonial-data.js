@@ -10,7 +10,7 @@ export const fashion_testi_data = [
     review:4,
     desc:'“ How you use the city or town name is up to you. All results may be freely used in any work.”',
     user:user_2,
-    name:'Theodore Handle',
+    name:'Thien Khang',
     designation:'CO Founder'
   },
   {
@@ -18,7 +18,7 @@ export const fashion_testi_data = [
     review:5,
     desc:'“Very happy with our choice to take our daughter to Brave care. The entire team was great! Thank you!”',
     user:user_3,
-    name:'John Smith',
+    name:'Thien Khang',
     designation:'UI/UX Designer'
   },
   {
@@ -26,7 +26,7 @@ export const fashion_testi_data = [
     review:3,
     desc:'“Thanks for all your efforts and teamwork over the last several months!  Thank you so much”',
     user:user_4,
-    name:'Salim Rana',
+    name:'Thien Khang',
     designation:'Web Developer'
   },
 ]

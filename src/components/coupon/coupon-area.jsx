@@ -3,14 +3,16 @@ import ErrorMsg from "../common/error-msg";
 import CouponItem from "./coupon-item";
 import { useGetCouponsQuery } from "@/redux/features/coupon/couponApi";
 import CouponLoader from "../loader/coupon-loader";
-
+import { useDispatch } from "react-redux";
+import { set_coupon } from "@/redux/features/coupon/couponSlice";
 const CouponArea = () => {
   const [copiedCode, setCopiedCode] = useState("");
   const [copied, setCopied] = useState(false);
-
+  const dispatch = useDispatch();
   const handleCopied = (code) => {
-    setCopiedCode(code);
+    setCopiedCode(code.coupon_code);
     setCopied(true);
+    dispatch(set_coupon(code));
     setTimeout(() => {
       setCopied(false);
     }, 3000);

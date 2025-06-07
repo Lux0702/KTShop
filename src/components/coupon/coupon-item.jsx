@@ -75,7 +75,7 @@ const CouponItem = ({ coupon, handleCopied, copiedCode, copied }) => {
         <div className="tp-coupon-date">
           <CopyToClipboard
             text={coupon.coupon_code}
-            onCopy={() => handleCopied(coupon.coupon_code)}
+            onCopy={() => handleCopied(coupon)}
           >
             <button>
               {copied && coupon.coupon_code === copiedCode ? (

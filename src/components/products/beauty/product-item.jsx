@@ -50,6 +50,7 @@ const ProductItem = ({ product, prdCenter = false, primary_style = false }) => {
               alignItems: "center",
               justifyContent: "center",
               background: "#f5f5f5",
+              maxHeight: 302,
             }}
           >
             {img ? (

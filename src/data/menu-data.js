@@ -98,7 +98,7 @@ export const mobile_menu = [
       { title: 'Shop', link: '/shop' },
       // { title: 'Right Sidebar', link: '/shop-right-sidebar' },
       // { title: 'Hidden Sidebar', link: '/shop-hidden-sidebar' },
-      { title: 'Only Categories', link: '/shop-category' },
+      { title: 'Categories', link: '/shop-category' },
       // { title: 'Product Simple', link: '/product-details' },
       // { title: 'With Video', link: '/product-details-video' },
       // { title: 'With Countdown Timer', link: '/product-details-countdown' },

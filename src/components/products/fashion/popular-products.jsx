@@ -84,7 +84,7 @@ const PopularProducts = () => {
             key={item.id}
             className="tp-category-item-2 p-relative z-index-1 text-center"
           >
-            <div className="tp-category-thumb-2" style={{ minHeight: 260 }}>
+            <div className="tp-category-thumb-2" style={{ maxWidth: 225, maxHeight: 260, minWidth: 225, minHeight: 260 }}>
               <Link href={`/product-details/${item.id}`}>
                 <Image src={item.img} alt="product-img" width={224} height={260} />
               </Link>

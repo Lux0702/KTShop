@@ -11,15 +11,16 @@ export const compareSlice = createSlice({
   initialState,
   reducers: {
     add_to_compare: (state, { payload }) => {
+      console.log("Adding to compare:", state.compareItems, payload);
       const isExist = state.compareItems.some(
-        (item) => item._id === payload._id
+        (item) => item.id === payload.id
       );
       if (!isExist) {
         state.compareItems.push(payload);
         notifySuccess(`${payload.title} added to compare`);
       } else {
         state.compareItems = state.compareItems.filter(
-          (item) => item._id !== payload._id
+          (item) => item.id !== payload.id
         );
         notifyError(`${payload.title} removed from compare`);
       }
@@ -27,7 +28,7 @@ export const compareSlice = createSlice({
     },
     remove_compare_product: (state, { payload }) => {
       state.compareItems = state.compareItems.filter(
-        (item) => item._id !== payload.id
+        (item) => item.id !== payload.id
       );
       setLocalStorage("compare_items", state.compareItems);
       notifyError(`${payload.title} removed from compare`);

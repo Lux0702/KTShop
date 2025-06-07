@@ -60,16 +60,17 @@ const useCheckoutSubmit = () => {
 
   const {register,handleSubmit,setValue,formState: { errors }} = useForm();
 
-  let couponRef = useRef("");
+  let couponRef = { current: { value: "" } };
 
   useEffect(() => {
     if (localStorage.getItem("couponInfo")) {
       const data = localStorage.getItem("couponInfo");
       const coupon = JSON.parse(data);
+      console.log("coupon", coupon);
       setCouponInfo(coupon);
-      setDiscountPercentage(coupon.discountPercentage);
-      setMinimumAmount(coupon.minimumAmount);
-      setDiscountProductType(coupon.productType);
+      setDiscountPercentage(coupon.discount_percentage);
+      setMinimumAmount(coupon.minimum_amount);
+      setDiscountProductType(coupon.product_type);
     }
   }, []);
 
@@ -126,7 +127,8 @@ const useCheckoutSubmit = () => {
   // handleCouponCode
   const handleCouponCode = (e) => {
     e.preventDefault();
-
+    console.log("couponRef", couponRef.current?.value);
+    console.log("offerCoupons", e);
     if (!couponRef.current?.value) {
       notifyError("Please Input a Coupon Code!");
       return;
@@ -138,7 +140,7 @@ const useCheckoutSubmit = () => {
       return notifyError("Something went wrong");
     }
     const result = offerCoupons?.filter(
-      (coupon) => coupon.couponCode === couponRef.current?.value
+      (coupon) => coupon.coupon_code === couponRef.current?.value
     );
 
     if (result.length < 1) {
@@ -160,10 +162,14 @@ const useCheckoutSubmit = () => {
       // notifySuccess(
       //   `Your Coupon ${result[0].title} is Applied on ${result[0].productType}!`
       // );
-      setCouponApplyMsg(`Your Coupon ${result[0].title} is Applied on ${result[0].productType} productType!`)
-      setMinimumAmount(result[0]?.minimumAmount);
+      setCouponApplyMsg(
+        `Your Coupon ${result[0].title} is Applied on ${
+          result[0].productType ? result[0].productType + "productType!" : "Order!"
+        }`
+      );
+      setMinimumAmount(result[0]?.minimum_mount);
       setDiscountProductType(result[0].productType);
-      setDiscountPercentage(result[0].discountPercentage);
+      setDiscountPercentage(result[0].discount_percentage);
       dispatch(set_coupon(result[0]));
       setTimeout(() => {
         couponRef.current.value = "";
