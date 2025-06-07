@@ -20,11 +20,11 @@ import {
   useDeleteReviewMutation,
   useUpdateReviewMutation,
 } from "@/redux/features/admin/reviewApi";
-
+import Loader from "@/components/loader/loader";
 export default function Reviews() {
   const [form] = Form.useForm();
  
-  const { data, refetch } = useGetAllReviewsQuery();
+  const { data, refetch, isLoading } = useGetAllReviewsQuery();
   const [deleteReview] = useDeleteReviewMutation();
 
   const [logoUrl, setLogoUrl] = useState("");
@@ -74,12 +74,31 @@ export default function Reviews() {
   ];
 
   return (
-    <><div style={{ padding: 24 }}></div><Table
-      columns={columns}
-      dataSource={reviews}
-      rowKey="id"
-      pagination={{ pageSize: 5 }} /></>
-      
-    
+    <div style={{ padding: 24 }}>
+      {isLoading && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(255,255,255,0.6)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <Loader loading spinner="fade" />
+        </div>
+      )}
+      <Table
+        columns={columns}
+        dataSource={reviews}
+        rowKey="id"
+        pagination={{ pageSize: 5 }}
+      />
+    </div>
   );
 }

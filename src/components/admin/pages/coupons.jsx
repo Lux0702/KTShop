@@ -69,13 +69,13 @@ export default function CouponManager() {
         if (payload[key] !== editing[key]) data[key] = payload[key];
       }
       if (Object.keys(data).length > 0) {
-        await updateCoupon({ id: editing.id, data });
+        await updateCoupon({ id: editing.id, data }).unwrap();
         message.success("Cập nhật thành công");
       } else {
         message.info("Không có thay đổi");
       }
     } else {
-      await addCoupon(payload);
+      await addCoupon(payload).unwrap();
       message.success("Thêm thành công");
     }
 
@@ -83,9 +83,11 @@ export default function CouponManager() {
     setEditing(null);
     form.resetFields();
     setLogoUrl("");
-  } catch {
+  } catch (err) {
+    console.error(err);
     message.error("Thao tác thất bại");
   }
+  
 };
 
   const handleUpload = async ({ file, onSuccess, onError }) => {
@@ -220,6 +222,7 @@ export default function CouponManager() {
           onFinish={handleSubmit}
           form={form}
           style={{ marginTop: 16 }}
+          initialValues={{ product_type: "fashion" }}
         >
           <Form.Item name="title" label="Name" rules={[{ required: true }]}>
             <Input />
@@ -229,7 +232,7 @@ export default function CouponManager() {
             label="Code"
             rules={[{ required: true }]}
           >
-            <Input />
+            <Input maxLength={9} />
           </Form.Item>
           <Form.Item
             name="discount_percentage"
@@ -241,16 +244,24 @@ export default function CouponManager() {
           <Form.Item name="minimum_amount" label="Minimum Order">
             <InputNumber style={{ width: "100%" }} min={0} />
           </Form.Item>
-          <Form.Item name="product_type" label="Product Type">
+          <Form.Item
+            name="product_type"
+            label="Product Type"
+            rules={[{ required: true }]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="status" label="Status">
+          <Form.Item name="status" label="Status" rules={[{ required: true }]}>
             <Select>
               <Select.Option value="active">Active</Select.Option>
               <Select.Option value="expired">Expired</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item name="dateRange" label="Start - End">
+          <Form.Item
+            name="dateRange"
+            label="Start - End"
+            rules={[{ required: true }]}
+          >
             <DatePicker.RangePicker style={{ width: "100%" }} />
           </Form.Item>
           <Form.Item>
