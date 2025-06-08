@@ -10,7 +10,7 @@ import useCheckoutSubmit from "@/hooks/use-checkout-submit";
 
 const CheckoutArea = () => {
   const checkoutData = useCheckoutSubmit();
-  const {handleSubmit,submitHandler,register,errors,handleCouponCode,couponRef,couponApplyMsg} = checkoutData;
+  const {handleSubmit,submitHandler,register,errors,handleCouponCode,couponRef,couponApplyMsg, cardError} = checkoutData;
   const { cart_products } = useSelector((state) => state.cart);
   return (
     <>
@@ -46,6 +46,11 @@ const CheckoutArea = () => {
                   </div>
                   <div className="col-lg-5">
                     <CheckoutOrderArea checkoutData={checkoutData} />
+                    {cardError && (
+                      <p style={{ color: "red", marginTop: "10px", fontWeight: "bold" }}>
+                        {cardError}
+                      </p>
+                    )}
                   </div>
                 </div>
               </form>

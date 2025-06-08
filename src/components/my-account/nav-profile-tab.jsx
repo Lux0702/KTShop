@@ -25,7 +25,7 @@ const NavProfileTab = ({ orderData }) => {
                 <div className="profile__main-content">
                   <div className="welcome-wrapper">
                     <img
-                      src={user?.image || "https://placehold.co/60"}
+                      src={user?.image_url || "https://placehold.co/60"}
                       alt="Avatar"
                       className="welcome-avatar"
                     />

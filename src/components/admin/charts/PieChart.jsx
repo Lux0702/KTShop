@@ -10,21 +10,19 @@ const toUpperCaseFirstLetter = (str) => {
 };
 
 const PieChart = ({ pieData }) => {
-  // Dữ liệu danh mục sản phẩm
-  const categoryData = pieData?.categoryData || [
-    { type: "electronics", count: 364 },
-    { type: "fashion", count: 61 },
-    { type: "beauty", count: 52 },
-    { type: "jewelry", count: 48 },
-  ];
+  const categoryData = pieData?.categoryData || [];
 
   const data = {
-    labels: categoryData.map((item) => toUpperCaseFirstLetter(item.type)),
+    labels: categoryData.map((item) =>
+      toUpperCaseFirstLetter(item?.parent || 'Unknown')
+    ),
     datasets: [
       {
         label: "Category Distribution",
         data: categoryData.map((item) => item.count),
-        backgroundColor: ["#10b981", "#f97316", "#3b82f6", "#eab308", "#6366f1", "#ec4899"],
+        backgroundColor: [
+          "#10b981", "#f97316", "#3b82f6", "#eab308", "#6366f1", "#ec4899"
+        ],
         borderColor: "#ffffff",
         borderWidth: 2,
       },

@@ -46,7 +46,7 @@ const MyOrders = ({ orderData }) => {
                   {item.status}
                 </td>
                 <td>
-                  <Link href={`/order/${item._id}`} className="tp-logout-btn">
+                  <Link href={`/order/${item.id}`} className="tp-logout-btn">
                     Invoice
                   </Link>
                 </td>

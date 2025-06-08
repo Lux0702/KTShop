@@ -137,7 +137,7 @@ const ShopPage = ({ query }) => {
     if (query.brand) {
       product_items = product_items.filter(
         (p) =>
-          p.brand.name.toLowerCase().replace("&", "").split(" ").join("-") ===
+          p.brand_name.toLowerCase().replace("&", "").split(" ").join("-") ===
           query.brand
       );
     }

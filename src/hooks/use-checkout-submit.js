@@ -225,9 +225,12 @@ const useCheckoutSubmit = () => {
         return;
       }
       const card = elements.getElement(CardElement);
-      if (card == null) {
-        return;
-      }
+      if (!card || card._empty) {
+  setCardError("Please enter your card information before proceeding.");
+  setIsCheckoutSubmit(false);
+  return;
+}
+
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: 'card',
         card: card,
