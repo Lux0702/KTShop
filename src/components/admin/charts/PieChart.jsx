@@ -4,25 +4,27 @@ import { Pie } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const toUpperCaseFistLetter = (str) => {
-  return str?.charAt(0).toUpperCase() + str?.slice(1);
-}
-const PieChart = ({pieData}) => {
+const toUpperCaseFirstLetter = (str) => {
+  if (!str) return 'Unknown';
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+const PieChart = ({ pieData }) => {
   // Dữ liệu danh mục sản phẩm
-  const categoryData = pieData?.categoryData ||  [
-    { _id: "electronics", count: 364 },
-    { _id: "fashion", count: 61 },
-    { _id: "beauty", count: 52 },
-    { _id: "jewelry", count: 48 },
+  const categoryData = pieData?.categoryData || [
+    { type: "electronics", count: 364 },
+    { type: "fashion", count: 61 },
+    { type: "beauty", count: 52 },
+    { type: "jewelry", count: 48 },
   ];
 
   const data = {
-    labels: categoryData.map((item) =>  toUpperCaseFistLetter( !item.id ? 'Unknown': item.id)),
+    labels: categoryData.map((item) => toUpperCaseFirstLetter(item.type)),
     datasets: [
       {
         label: "Category Distribution",
         data: categoryData.map((item) => item.count),
-        backgroundColor: ["#10b981", "#f97316", "#3b82f6", "#eab308"],
+        backgroundColor: ["#10b981", "#f97316", "#3b82f6", "#eab308", "#6366f1", "#ec4899"],
         borderColor: "#ffffff",
         borderWidth: 2,
       },
