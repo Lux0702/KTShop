@@ -26,6 +26,12 @@ export const categoryApi = apiSlice.injectEndpoints({
                 body: data,
             }),
         }),
+        deleteCategory: builder.mutation({
+            query: (id ) => ({
+                url: `https://ktshop.onrender.com/api/category/delete/${id}`,
+                method: "DELETE",
+            }),
+        }),
     }),
 })
 export const {
@@ -34,4 +40,5 @@ export const {
     useGetShowCategoryQuery,
     useGetAllCategoriesQuery,
     useUpdateCategoryMutation,
+    useDeleteCategoryMutation,
 } = categoryApi;

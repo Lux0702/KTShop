@@ -18,6 +18,7 @@ import { useUploadImageMutation } from "@/redux/features/admin/cloudinaryApi";
 import {
   useAddCategoryMutation,
   useUpdateCategoryMutation,
+  useDeleteCategoryMutation,
 } from "@/redux/features/admin/categoryApi";
 
 import CategoryForm from "@/components/admin/category/CategoryForm";
@@ -38,7 +39,8 @@ const CategoryArea = ({ dataCategory }) => {
   const [addCategory, { isLoading: isAdding }] = useAddCategoryMutation();
   const [updateCategory, { isLoading: isUpdating }] =
     useUpdateCategoryMutation();
-  
+  const [deleteCategory, { isLoading: isDeleting }] = useDeleteCategoryMutation();
+
 
   const onFinishAdd = async (values) => {
     try {
@@ -172,12 +174,17 @@ const CategoryArea = ({ dataCategory }) => {
                 okText: "Xóa",
                 okType: "danger",
                 cancelText: "Hủy",
-                onOk: () => {
-                  setData((prev) =>
-                    prev.filter((item) => item.id !== record.id)
-                  );
-                  message.success("Xóa thành công");
-                },
+                onOk: async () => {
+                try {
+                  console.log("record.id",record.id)
+                  await deleteCategory(record.id).unwrap();
+                  setData((prev) => prev.filter((item) => item.id !== record.id));
+                  message.success("Xóa danh mục thành công");
+                } catch (err) {
+                  message.error("Xóa thất bại: " + (err?.data?.message || "Có lỗi xảy ra"));
+                }
+              },
+
               });
             }}
           />
@@ -252,7 +259,7 @@ const CategoryArea = ({ dataCategory }) => {
         open={openDrawer}
       >
         <div style={{ padding: 24 }}>
-          {(isAdding || isUpdating) && (
+          {(isAdding || isUpdating || isDeleting) && (
             <div
               style={{
                 position: "fixed",
